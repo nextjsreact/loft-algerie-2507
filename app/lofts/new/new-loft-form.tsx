@@ -2,18 +2,19 @@
 
 import { LoftForm } from "@/components/forms/loft-form"
 import { createLoft } from "@/app/actions/lofts"
-import type { LoftOwner } from "@/lib/types"
-import type { ZoneArea } from "@/app/actions/zone-areas" // Import ZoneArea type
+import type { LoftOwner, InternetConnectionType } from "@/lib/types"
+import type { ZoneArea } from "@/app/actions/zone-areas"
 import { toast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 
 interface NewLoftFormWrapperProps {
   owners: LoftOwner[];
-  zoneAreas: ZoneArea[]; // Add zoneAreas prop
+  zoneAreas: ZoneArea[];
+  internetConnectionTypes: InternetConnectionType[];
 }
 
-export function NewLoftFormWrapper({ owners, zoneAreas }: NewLoftFormWrapperProps) {
+export function NewLoftFormWrapper({ owners, zoneAreas, internetConnectionTypes }: NewLoftFormWrapperProps) {
   const router = useRouter()
 
   const handleSubmit = async (data: any) => {
@@ -37,5 +38,5 @@ export function NewLoftFormWrapper({ owners, zoneAreas }: NewLoftFormWrapperProp
     }
   }
 
-  return <LoftForm owners={owners} zoneAreas={zoneAreas} onSubmit={handleSubmit} />
+  return <LoftForm owners={owners} zoneAreas={zoneAreas} internetConnectionTypes={internetConnectionTypes} onSubmit={handleSubmit} />
 }

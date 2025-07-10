@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Sidebar } from "@/components/layout/sidebar"
-import type { User } from "@/lib/database"
+import type { User } from "@/lib/types"
 
 import { ThemeToggle } from "@/components/theme-toggle"
 

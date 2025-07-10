@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import type { Database } from "@/lib/types"
 import { createClient } from '@/utils/supabase/server' // Import the new createClient
+import { unstable_noStore as noStore } from 'next/cache';
 
 type Loft = Database['public']['Tables']['lofts']['Row']
 
@@ -37,6 +38,7 @@ export async function deleteLoft(id: string) {
 }
 
 export async function getLoft(id: string): Promise<Loft | null> {
+  noStore();
   const supabase = await createClient() // Create client here
   const { data: loft, error } = await supabase
     .from("lofts")
@@ -65,6 +67,8 @@ export async function updateLoft(id: string, data: Omit<Loft, "id" | "created_at
     console.error("Error updating loft:", error)
     throw error
   }
+
+  redirect(`/lofts/${id}`)
 }
 
 interface CreateLoftResult {

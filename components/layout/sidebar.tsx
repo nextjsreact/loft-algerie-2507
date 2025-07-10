@@ -2,30 +2,31 @@
 
 import { 
   Building2, Calendar, DollarSign, Home, LogOut, Settings, Users, 
-  ClipboardList, UserCheck, ChevronDown, ChevronRight, LayoutDashboard, CreditCard, MessageSquare
+  ClipboardList, UserCheck, ChevronDown, ChevronRight, LayoutDashboard, CreditCard, MessageSquare, Bell
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import type { User, Database } from "@/lib/types"
+import type { User, UserRole } from "@/lib/types"
 import { logout } from "@/lib/auth"
 import { useState } from "react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-
 import { ThemeToggle } from "@/components/theme-toggle"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-  user: User
+  user: User;
+  unreadCount: number | null;
 }
 
-export function Sidebar({ user, className }: SidebarProps) {
+export function Sidebar({ user, unreadCount, className }: SidebarProps) {
   const pathname = usePathname()
   const [isSettingsOpen, setIsSettingsOpen] = useState(pathname.startsWith('/settings'))
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, roles: ["admin", "manager", "member"] },
     { name: "Conversations", href: "/conversations", icon: MessageSquare, roles: ["admin", "manager", "member"] },
+    { name: "Notifications", href: "/notifications", icon: Bell, roles: ["admin", "manager", "member"] },
     { name: "Lofts", href: "/lofts", icon: Building2, roles: ["admin", "manager"] },
     { name: "Tasks", href: "/tasks", icon: ClipboardList, roles: ["admin", "manager", "member"] },
     { name: "Teams", href: "/teams", icon: Users, roles: ["admin", "manager"] },
@@ -41,7 +42,9 @@ export function Sidebar({ user, className }: SidebarProps) {
         { name: "Categories", href: "/settings/categories", icon: ClipboardList, roles: ["admin"] },
         { name: "Currencies", href: "/settings/currencies", icon: DollarSign, roles: ["admin"] },
         { name: "Zone Areas", href: "/settings/zone-areas", icon: Home, roles: ["admin"] },
-        { name: "Payment Methods", href: "/settings/payment-methods", icon: CreditCard, roles: ["admin"] }
+        { name: "Payment Methods", href: "/settings/payment-methods", icon: CreditCard, roles: ["admin"] },
+        { name: "Internet Connections", href: "/settings/internet-connections", icon: Building2, roles: ["admin"] },
+        { name: "Application", href: "/settings/application", icon: Settings, roles: ["admin"] }
       ]
     },
   ]
@@ -120,7 +123,12 @@ export function Sidebar({ user, className }: SidebarProps) {
                 isActive ? "bg-gray-800 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white",
               )}
             >
-              <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
+              <div className="relative">
+                <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
+                {item.name === "Notifications" && unreadCount && unreadCount > 0 && (
+                  <div className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></div>
+                )}
+              </div>
               {item.name}
             </Link>
           )
@@ -131,7 +139,7 @@ export function Sidebar({ user, className }: SidebarProps) {
         <div className="flex items-center gap-3 p-2 rounded-lg bg-gray-800/50 hover:bg-gray-800 transition-colors">
           <div className="relative">
             <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-              <span className="text-sm font-bold text-white">{user.full_name.charAt(0).toUpperCase()}</span>
+              <span className="text-sm font-bold text-white">{(user.full_name || '').charAt(0).toUpperCase()}</span>
             </div>
             <div className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-gray-900 bg-green-500"></div>
           </div>

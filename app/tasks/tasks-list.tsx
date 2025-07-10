@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { Task, TaskStatus } from "@/lib/types"
+import type { Task, TaskStatus, User } from "@/lib/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -12,12 +12,13 @@ import { DatePicker } from "../../components/ui/date-picker"
 
 interface TasksListProps {
   tasks: Task[]
+  users: User[]
   isAdmin: boolean
 }
 
 const TASK_STATUSES: TaskStatus[] = ["todo", "in_progress", "completed"]
 
-export function TasksList({ tasks, isAdmin }: TasksListProps) {
+export function TasksList({ tasks, users, isAdmin }: TasksListProps) {
   const [statusFilter, setStatusFilter] = React.useState<string>("all")
   const [startDate, setStartDate] = React.useState<Date | undefined>()
   const [endDate, setEndDate] = React.useState<Date | undefined>()
@@ -86,6 +87,11 @@ export function TasksList({ tasks, isAdmin }: TasksListProps) {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mt-2">{task.description}</p>
+              {task.assigned_to && (
+                <div className="mt-2 text-sm text-muted-foreground">
+                  Assigned to: {users.find(user => user.id === task.assigned_to)?.full_name || 'Unknown User'}
+                </div>
+              )}
               <div className="mt-4 flex gap-2">
                 <Button variant="outline" size="sm" asChild>
                   <Link href={`/tasks/${task.id}`}>View</Link>

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import type { Database } from "@/lib/types"
 import { createClient } from '@/utils/supabase/server'; // Import the new createClient
 
-type ZoneArea = Database['public']['Tables']['zone_areas']['Row']
+export type ZoneArea = Database['public']['Tables']['zone_areas']['Row']
 
 export async function getZoneAreas(): Promise<ZoneArea[]> {
   const supabase = await createClient(); // Create client here

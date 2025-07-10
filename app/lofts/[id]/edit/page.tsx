@@ -1,40 +1,57 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import { LoftForm } from "@/components/forms/loft-form"
 import { getLoft, updateLoft } from "@/app/actions/lofts"
 import { getOwners } from "@/app/actions/owners"
-import { getZoneAreas } from "@/app/actions/zone-areas" // Import getZoneAreas
-import { notFound, redirect } from "next/navigation"
+import { getZoneAreas } from "@/app/actions/zone-areas"
+import { getInternetConnectionTypes } from "@/app/actions/internet-connections"
+import { notFound, redirect, useParams } from "next/navigation"
+import { LoftFormData } from "@/lib/validations"
+import type { Loft, LoftOwner, ZoneArea, InternetConnectionType } from "@/lib/types"
 
-export default async function EditLoftPage({ params }: { params: { id: string } }) {
-  const { id } = params // Destructure id from params
-  const [loft, owners, zoneAreas] = await Promise.all([ // Fetch zoneAreas
-    getLoft(id), // Use the destructured id
-    getOwners(),
-    getZoneAreas() // Fetch zone areas
-  ])
+export default function EditLoftPage() {
+  const params = useParams()
+  const id = params.id as string
+
+  const [loft, setLoft] = useState<Loft | null>(null)
+  const [owners, setOwners] = useState<LoftOwner[]>([])
+  const [zoneAreas, setZoneAreas] = useState<ZoneArea[]>([])
+  const [internetConnectionTypes, setInternetConnectionTypes] = useState<InternetConnectionType[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!id) return;
+      try {
+        const [loftData, ownersData, zoneAreasData, internetConnectionTypesData] = await Promise.all([
+          getLoft(id),
+          getOwners(),
+          getZoneAreas(),
+          getInternetConnectionTypes(),
+        ])
+        if (!loftData) {
+          return notFound()
+        }
+        setLoft(loftData)
+        setOwners(ownersData)
+        setZoneAreas(zoneAreasData)
+        setInternetConnectionTypes(internetConnectionTypesData)
+      } catch (error) {
+        console.error("Failed to fetch loft data:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [id])
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
 
   if (!loft) {
     return notFound()
-  }
-
-  async function handleUpdate(data: {
-    address: string
-    name: string
-    status: "available" | "occupied" | "maintenance"
-    price_per_month: number
-    owner_id: string
-    company_percentage: number
-    owner_percentage: number
-    description?: string
-    zone_area_id?: string | null; // Add zone_area_id
-  }) {
-    "use server"
-    try {
-      await updateLoft(id, data) // Use the destructured id
-      redirect(`/lofts/${id}`) // Use the destructured id
-    } catch (error) {
-      console.error("Failed to update loft:", error)
-      throw error
-    }
   }
 
   return (
@@ -46,8 +63,9 @@ export default async function EditLoftPage({ params }: { params: { id: string } 
       <LoftForm
         loft={loft}
         owners={owners}
-        zoneAreas={zoneAreas} // Pass zoneAreas
-        onSubmit={handleUpdate}
+        zoneAreas={zoneAreas}
+        internetConnectionTypes={internetConnectionTypes}
+        onSubmit={(data) => updateLoft(id, data)}
       />
     </div>
   )

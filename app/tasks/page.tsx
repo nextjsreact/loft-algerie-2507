@@ -1,5 +1,6 @@
 import { requireRole } from "@/lib/auth"
 import { getTasks } from "@/app/actions/tasks"
+import { getUsers } from "@/app/actions/users"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import Link from "next/link"
@@ -8,6 +9,7 @@ import { TasksList } from "./tasks-list"
 export default async function TasksPage() {
   const session = await requireRole(["admin", "manager"])
   const tasks = await getTasks()
+  const users = await getUsers()
 
   return (
     <div className="space-y-6">
@@ -25,7 +27,7 @@ export default async function TasksPage() {
           </Button>
         )}
       </div>
-      <TasksList tasks={tasks} isAdmin={session.user.role === "admin"} />
+      <TasksList tasks={tasks} users={users} isAdmin={session.user.role === "admin"} />
     </div>
   )
 }

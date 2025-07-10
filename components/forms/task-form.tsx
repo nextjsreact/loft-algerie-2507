@@ -10,21 +10,24 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { useRouter } from 'next/navigation'
-import type { Task } from '@/lib/types'
+import type { Task, User } from '@/lib/types'
 
 interface TaskFormProps {
   task?: Task
+  users: User[]
   onSubmit: (data: TaskFormData) => Promise<void>
   isSubmitting?: boolean
 }
 
-export function TaskForm({ task, onSubmit, isSubmitting = false }: TaskFormProps) {
+export function TaskForm({ task, users, onSubmit, isSubmitting = false }: TaskFormProps) {
   const router = useRouter()
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     defaultValues: task ? {
       ...task,
-      due_date: task.due_date ? new Date(task.due_date) : undefined,
+      description: task.description ?? undefined, // Convert null to undefined
+      due_date: task.due_date ? new Date(task.due_date).toISOString().split('T')[0] : undefined,
+      assigned_to: task.assigned_to ?? 'unassigned', // Convert null to 'unassigned'
     } : { status: 'todo' },
   })
 
@@ -69,6 +72,24 @@ export function TaskForm({ task, onSubmit, isSubmitting = false }: TaskFormProps
               <Input id="due_date" type="date" {...register('due_date')} />
               {errors.due_date && <p className="text-sm text-red-500">{errors.due_date.message}</p>}
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="assigned_to">Assign To</Label>
+            <Select onValueChange={(value) => setValue('assigned_to', value === 'unassigned' ? null : value)} defaultValue={task?.assigned_to || 'unassigned'}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a user" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="unassigned">Unassigned</SelectItem>
+                {users.map((user) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.full_name} ({user.email})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.assigned_to && <p className="text-sm text-red-500">{errors.assigned_to.message}</p>}
           </div>
 
           <div className="flex gap-4 pt-4">

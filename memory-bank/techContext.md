@@ -1,15 +1,15 @@
 # Tech Context
 
-## Core Technologies
+## Frameworks & Libraries
 
-*   **Framework**: Next.js
-*   **Language**: TypeScript
-*   **Styling**: Tailwind CSS & shadcn/ui
-*   **Authentication**: Lucia
+*   **Next.js**: The core framework for building the React application, providing server-side rendering, routing, and more.
+*   **React**: The library for building the user interface.
+*   **Tailwind CSS**: A utility-first CSS framework for styling.
+*   **Supabase**: Used for the database and authentication.
+*   **Drizzle ORM**: For type-safe database queries.
 
-## Database
+## Development Environment
 
-*   **Current**: Neon (Postgres)
-*   **Migration Target**: Supabase
-
-This file documents that the project is in the process of migrating from Neon to Supabase.
+*   **Node.js**: The runtime environment for the application.
+*   **pnpm**: The package manager for the project.
+*   **TypeScript**: The programming language used for the project.

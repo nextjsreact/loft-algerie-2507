@@ -6,6 +6,7 @@ import type { Database } from "@/lib/types"
 import { z } from "zod"
 import { taskSchema } from "@/lib/validations"
 import { createClient } from '@/utils/supabase/server' // Import the new createClient
+import { createNotification } from './notifications'
 
 type Task = Database['public']['Tables']['tasks']['Row']
 
@@ -45,14 +46,26 @@ export async function createTask(data: unknown) {
   const validatedData = taskSchema.parse(data);
 
   const supabase = await createClient() // Create client here
-  const { error } = await supabase.from("tasks").insert({
+  const { data: newTask, error } = await supabase.from("tasks").insert({
     ...validatedData,
+    due_date: validatedData.due_date ? new Date(validatedData.due_date).toISOString() : null,
     // created_by: session.user.id, // created_by does not exist on this table
-  })
+  }).select().single()
 
   if (error) {
     console.error("Error creating task:", error)
     throw error
+  }
+
+  // Create a notification for the assigned user
+  if (validatedData.assigned_to && newTask) {
+    console.log("Attempting to create notification for user:", validatedData.assigned_to);
+    await createNotification(
+      validatedData.assigned_to,
+      "New Task Assigned",
+      `You have been assigned a new task: "${validatedData.title}". ${validatedData.description || ''}`,
+      `/tasks/${newTask.id}`
+    );
   }
     
   redirect("/tasks")
@@ -65,7 +78,10 @@ export async function updateTask(id: string, data: unknown) {
   const supabase = await createClient() // Create client here
   const { error } = await supabase
     .from("tasks")
-    .update(validatedData)
+    .update({
+      ...validatedData,
+      due_date: validatedData.due_date ? new Date(validatedData.due_date).toISOString() : null,
+    })
     .eq("id", id)
 
   if (error) {

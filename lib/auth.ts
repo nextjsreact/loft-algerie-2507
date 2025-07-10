@@ -6,7 +6,6 @@ import { createClient } from '@/utils/supabase/server'
 import type { AuthSession } from "./types"
 
 export async function getSession(): Promise<AuthSession | null> {
-  console.log("getSession called");
   const supabase = await createClient(); // Create client here for each request
 
   try {
@@ -28,21 +27,20 @@ export async function getSession(): Promise<AuthSession | null> {
       return null;
     }
 
-    const newSession = {
-      user: {
-        id: user.id,
-        email: user.email ?? null,
-        full_name: full_name,
-        role: role,
-        created_at: user.created_at,
-        updated_at: user.updated_at ?? null,
-      },
-      token: supabaseSessionData.access_token,
-    };
-    
-    console.log('Current session:', newSession);
-    return newSession;
-  } catch (error) {
+        const newSession = {
+            user: {
+                id: user.id,
+                email: user.email ?? null,
+                full_name: full_name,
+                role: role,
+                created_at: user.created_at,
+                updated_at: user.updated_at ?? null
+            },
+            token: supabaseSessionData.access_token
+        };
+        
+        return newSession;
+    } catch (error) {
     console.error("Unexpected error in getSession:", error);
     
     // Try a fresh sign out on unexpected errors
