@@ -4,7 +4,7 @@ import React, { createContext, useContext, ReactNode } from 'react'
 import { translations, Language } from './translations'
 
 interface I18nContextType {
-  t: (key: string) => string
+  t: (key: string, params?: Record<string, string | number>) => string
   language: Language
   setLanguage: (lang: Language) => void
 }
@@ -59,7 +59,7 @@ export function I18nProvider({ children, initialLanguage = 'ar' }: I18nProviderP
     }
   }
 
-  const t = (key: string): string => {
+  const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.')
     let result: any = translations[language]
     
@@ -67,20 +67,30 @@ export function I18nProvider({ children, initialLanguage = 'ar' }: I18nProviderP
       if (result && typeof result === 'object' && k in result) {
         result = result[k]
       } else {
-        // Fallback to English if key not found
-        result = translations.en
+        // Fallback to English if key not found in current language
+        let fallbackResult: any = translations.en
         for (const fallbackKey of keys) {
-          if (result && typeof result === 'object' && fallbackKey in result) {
-            result = result[fallbackKey]
+          if (fallbackResult && typeof fallbackResult === 'object' && fallbackKey in fallbackResult) {
+            fallbackResult = fallbackResult[fallbackKey]
           } else {
-            return key // Return key as fallback
+            return key // Return key as fallback if not found in English either
           }
         }
-        return result || key
+        result = fallbackResult
+        break // Stop searching and use the English fallback
       }
     }
     
-    return result || key
+    let translatedString = result || key
+
+    // Replace placeholders if params are provided
+    if (params) {
+      for (const paramKey in params) {
+        translatedString = translatedString.replace(new RegExp(`\\{${paramKey}\\}`, 'g'), String(params[paramKey]))
+      }
+    }
+    
+    return translatedString
   }
 
   return (
