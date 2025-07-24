@@ -22,16 +22,26 @@ export function NewLoftFormWrapper({ owners, zoneAreas, internetConnectionTypes 
       const result = await createLoft(data)
       if (result?.success) {
         toast({
-          title: "Success",
-          description: `Loft created (ID: ${result.loftId})`,
-          duration: 3000, // Shorter duration for auto-redirect
+          title: "✅ Success",
+          description: `Loft "${data.name}" created successfully`,
+          duration: 3000,
         })
-        router.push("/lofts") // Redirect to the lofts menu
+        setTimeout(() => {
+          router.push("/lofts")
+        }, 1000)
+      } else {
+        toast({
+          title: "❌ Error",
+          description: "Failed to create loft - please try again",
+          variant: "destructive",
+          duration: 5000,
+        })
       }
     } catch (error) {
+      console.error('Error creating loft:', error)
       toast({
-        title: "Error",
-        description: "Failed to create loft",
+        title: "❌ Error",
+        description: "Failed to create loft - please check your data and try again",
         variant: "destructive",
         duration: 5000,
       })

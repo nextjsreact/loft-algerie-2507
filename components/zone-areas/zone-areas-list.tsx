@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslation } from "@/lib/i18n/context";
 import {
   Table,
   TableBody,
@@ -20,19 +21,21 @@ interface ZoneAreaListProps {
 }
 
 export function ZoneAreaList({ zoneAreas, onEdit, onRefresh }: ZoneAreaListProps) {
+  const { t } = useTranslation();
+  
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this zone area?")) {
+    if (confirm(t('zoneAreas.deleteConfirm'))) {
       try {
         await deleteZoneArea(id);
         toast({
-          title: "Success",
-          description: "Zone area deleted successfully.",
+          title: t('common.success'),
+          description: t('zoneAreas.deleteSuccess'),
         });
         onRefresh(); // Call onRefresh after successful delete
       } catch (error) {
         toast({
-          title: "Error",
-          description: "Failed to delete zone area.",
+          title: t('common.error'),
+          description: t('zoneAreas.deleteError'),
           variant: "destructive",
         });
       }
@@ -41,15 +44,15 @@ export function ZoneAreaList({ zoneAreas, onEdit, onRefresh }: ZoneAreaListProps
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-semibold mb-4">Existing Zone Areas</h2>
+      <h2 className="text-xl font-semibold mb-4">{t('zoneAreas.existingZoneAreas')}</h2>
       {zoneAreas.length === 0 ? (
-        <p>No zone areas created yet.</p>
+        <p>{t('zoneAreas.noZoneAreasYet')}</p>
       ) : (
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t('zoneAreas.name')}</TableHead>
+              <TableHead className="text-right">{t('zoneAreas.actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

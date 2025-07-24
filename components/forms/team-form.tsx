@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { toast } from "@/components/ui/use-toast"
 import type { Team } from "@/lib/database"
 
 interface TeamFormProps {
@@ -26,15 +27,41 @@ export function TeamForm({ team, action }: TeamFormProps) {
       const result = await action(formData)
       if (result?.error) {
         setError(result.error)
+        toast({
+          title: "❌ Error",
+          description: result.error,
+          variant: "destructive",
+          duration: 5000,
+        })
       } else if (result?.team) {
-        router.refresh()
-        router.push(`/teams/${result.team.id}`)
+        toast({
+          title: "✅ Success",
+          description: `Team "${result.team.name}" ${team ? 'updated' : 'created'} successfully`,
+          duration: 3000,
+        })
+        setTimeout(() => {
+          router.push(`/teams/${result.team.id}`)
+        }, 1000)
       } else {
-        router.refresh()
-        router.push("/teams")
+        const teamName = formData.get("name") as string
+        toast({
+          title: "✅ Success",
+          description: `Team "${teamName}" ${team ? 'updated' : 'created'} successfully`,
+          duration: 3000,
+        })
+        setTimeout(() => {
+          router.push("/teams")
+        }, 1000)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred")
+      const errorMessage = err instanceof Error ? err.message : "An error occurred"
+      setError(errorMessage)
+      toast({
+        title: "❌ Error",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 5000,
+      })
     }
   }
 

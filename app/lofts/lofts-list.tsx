@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useTranslation } from "@/lib/i18n/context"
 import type { Loft, LoftOwner, ZoneArea, LoftStatus } from "@/lib/types"
 import { deleteLoft } from "@/app/actions/lofts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,6 +21,7 @@ interface LoftsListProps {
 const LOFT_STATUSES: LoftStatus[] = ["available", "occupied", "maintenance"]
 
 export function LoftsList({ lofts, owners, zoneAreas, isAdmin }: LoftsListProps) {
+  const { t } = useTranslation()
   const [statusFilter, setStatusFilter] = React.useState<string>("all")
   const [ownerFilter, setOwnerFilter] = React.useState<string>("all")
   const [zoneAreaFilter, setZoneAreaFilter] = React.useState<string>("all")
@@ -48,29 +50,29 @@ export function LoftsList({ lofts, owners, zoneAreas, isAdmin }: LoftsListProps)
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div>
-          <Label htmlFor="status-filter">Filter by Status</Label>
+          <Label htmlFor="status-filter">{t('lofts.filterByStatus')}</Label>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger id="status-filter">
-              <SelectValue placeholder="All Status" />
+              <SelectValue placeholder={t('lofts.allStatuses')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="all">{t('lofts.allStatuses')}</SelectItem>
               {LOFT_STATUSES.map((status) => (
                 <SelectItem key={status} value={status} className="capitalize">
-                  {status}
+                  {t(`lofts.status.${status}`)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div>
-          <Label htmlFor="owner-filter">Filter by Owner</Label>
+          <Label htmlFor="owner-filter">{t('lofts.filterByOwner')}</Label>
           <Select value={ownerFilter} onValueChange={setOwnerFilter}>
             <SelectTrigger id="owner-filter">
-              <SelectValue placeholder="All Owners" />
+              <SelectValue placeholder={t('lofts.allOwners')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Owners</SelectItem>
+              <SelectItem value="all">{t('lofts.allOwners')}</SelectItem>
               {owners.map((owner) => (
                 <SelectItem key={owner.id} value={owner.id}>
                   {owner.name}
@@ -80,13 +82,13 @@ export function LoftsList({ lofts, owners, zoneAreas, isAdmin }: LoftsListProps)
           </Select>
         </div>
         <div>
-          <Label htmlFor="zone-area-filter">Filter by Zone Area</Label>
+          <Label htmlFor="zone-area-filter">{t('lofts.filterByZoneArea')}</Label>
           <Select value={zoneAreaFilter} onValueChange={setZoneAreaFilter}>
             <SelectTrigger id="zone-area-filter">
-              <SelectValue placeholder="All Zone Areas" />
+              <SelectValue placeholder={t('lofts.allZoneAreas')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Zone Areas</SelectItem>
+              <SelectItem value="all">{t('lofts.allZoneAreas')}</SelectItem>
               {zoneAreas.map((area) => (
                 <SelectItem key={area.id} value={area.id}>
                   {area.name}
@@ -106,47 +108,47 @@ export function LoftsList({ lofts, owners, zoneAreas, isAdmin }: LoftsListProps)
                   <CardTitle className="text-lg">{loft.name}</CardTitle>
                   <CardDescription>{loft.address}</CardDescription>
                 </div>
-                <Badge className={getStatusColor(loft.status)}>{loft.status}</Badge>
+                <Badge className={getStatusColor(loft.status)}>{t(`lofts.status.${loft.status}`)}</Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Monthly Rent:</span>
+                  <span className="text-sm text-muted-foreground">{t('lofts.monthlyRent')}:</span>
                   <span className="font-medium">${loft.price_per_month}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Owner:</span>
-                  <span className="font-medium">{loft.owner_name || "Unknown"}</span>
+                  <span className="text-sm text-muted-foreground">{t('lofts.owner')}:</span>
+                  <span className="font-medium">{loft.owner_name || t('lofts.unknown')}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Zone Area:</span>
+                  <span className="text-sm text-muted-foreground">{t('lofts.zoneArea')}:</span>
                   <span className="font-medium">{loft.zone_area_name || "N/A"}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Company Share:</span>
+                  <span className="text-sm text-muted-foreground">{t('lofts.companyShare')}:</span>
                   <span className="font-medium">{loft.company_percentage}%</span>
                 </div>
                 {loft.description && <p className="text-sm text-muted-foreground mt-2">{loft.description}</p>}
               </div>
               <div className="mt-4 flex gap-2">
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/lofts/${loft.id}`}>View</Link>
+                  <Link href={`/lofts/${loft.id}`}>{t('common.view')}</Link>
                 </Button>
                 {isAdmin && (
                   <>
                     <Button variant="outline" size="sm" asChild>
-                      <Link href={`/lofts/${loft.id}/edit`}>Edit</Link>
+                      <Link href={`/lofts/${loft.id}/edit`}>{t('common.edit')}</Link>
                     </Button>
                     <form
                       action={async () => {
-                        if (confirm("Are you sure you want to delete this loft?")) {
+                        if (confirm(t('lofts.deleteConfirm'))) {
                           await deleteLoft(loft.id)
                         }
                       }}
                     >
                       <Button variant="destructive" size="sm" type="submit">
-                        Delete
+                        {t('common.delete')}
                       </Button>
                     </form>
                   </>
@@ -157,7 +159,7 @@ export function LoftsList({ lofts, owners, zoneAreas, isAdmin }: LoftsListProps)
         ))}
         {filteredLofts.length === 0 && (
           <div className="col-span-full text-center text-muted-foreground">
-            No lofts match the selected filters.
+            {t('lofts.noLoftsMatch')}
           </div>
         )}
       </div>

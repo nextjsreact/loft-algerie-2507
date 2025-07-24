@@ -1,0 +1,1012 @@
+export type Language = 'en' | 'fr' | 'ar'
+
+export const translations = {
+  en: {
+    // Landing Page
+    landing: {
+      title: "Loft Management System",
+      subtitle: "Professional SaaS platform for managing loft properties",
+      description: "Streamline your loft management operations with our comprehensive platform. Manage properties, track finances, assign tasks, and more.",
+      getStarted: "Get Started",
+      signIn: "Sign In",
+      chooseLanguage: "Choose Language",
+      features: {
+        title: "Key Features",
+        property: {
+          title: "Property Management",
+          description: "Manage your loft properties with detailed information and status tracking"
+        },
+        financial: {
+          title: "Financial Tracking",
+          description: "Track income, expenses, and generate comprehensive financial reports"
+        },
+        tasks: {
+          title: "Task Management",
+          description: "Assign and track tasks with team collaboration features"
+        },
+        notifications: {
+          title: "Smart Notifications",
+          description: "Stay updated with real-time notifications and bill reminders"
+        }
+      }
+    },
+    
+    // Authentication
+    auth: {
+      welcomeBack: "Welcome back",
+      signInDescription: "Enter your credentials to access the loft management system",
+      signUpTitle: "Create Account",
+      signUpDescription: "Create your account to start managing lofts",
+      email: "Email",
+      password: "Password",
+      confirmPassword: "Confirm Password",
+      fullName: "Full Name",
+      enterEmail: "Enter your email",
+      enterPassword: "Enter your password",
+      confirmPasswordPlaceholder: "Confirm your password",
+      enterFullName: "Enter your full name",
+      forgotPassword: "Forgot password?",
+      signIn: "Sign In",
+      signUp: "Sign Up",
+      signOut: "Sign Out",
+      signingIn: "Signing in...",
+      signingUp: "Signing up...",
+      noAccount: "Don't have an account?",
+      haveAccount: "Already have an account?",
+      demoAccounts: "Demo Accounts:",
+      admin: "Admin",
+      manager: "Manager",
+      member: "Member",
+      registrationFailed: "Registration failed",
+      unexpectedError: "An unexpected error occurred"
+    },
+
+    // Navigation
+    nav: {
+      dashboard: "Dashboard",
+      executive: "Executive Dashboard",
+      conversations: "Conversations",
+      lofts: "Lofts",
+      tasks: "Tasks",
+      transactions: "Transactions",
+      teams: "Teams",
+      owners: "Owners",
+      reports: "Reports",
+      notifications: "Notifications",
+      settings: "Settings",
+      categories: "Categories",
+      currencies: "Currencies",
+      zoneAreas: "Zone Areas",
+      paymentMethods: "Payment Methods",
+      internetConnections: "Internet Connections",
+      application: "Application"
+    },
+
+    // Dashboard
+    dashboard: {
+      title: "Dashboard",
+      subtitle: "Overview of your loft management system",
+      totalLofts: "Total Lofts",
+      occupiedLofts: "Occupied",
+      activeTasks: "Active Tasks",
+      inProgress: "In progress",
+      monthlyRevenue: "Monthly Revenue",
+      thisMonth: "This month",
+      teams: "Teams",
+      activeTeams: "Active teams",
+      billMonitoring: "Bill Monitoring",
+      updated: "Updated",
+      overdue: "Overdue",
+      billsPastDue: "Bills past due",
+      dueToday: "Due Today",
+      billsDueNow: "Bills due now",
+      upcoming: "Upcoming",
+      next30Days: "Next 30 days",
+      active: "Active",
+      loftsWithBills: "Lofts with bills",
+      systemStatus: "System Status",
+      allBillsCurrent: "All bills current",
+      actionRequired: "Action required",
+      attentionNeeded: "Attention needed",
+      revenueVsExpenses: "Revenue vs Expenses",
+      monthlyFinancialOverview: "Monthly financial overview",
+      revenue: "Revenue",
+      expenses: "Expenses",
+      recentTasks: "Recent Tasks",
+      latestTaskUpdates: "Latest task updates",
+      due: "Due",
+      welcomeBack: "Welcome back, {name}!",
+      someDataError: "Some data couldn't be loaded",
+      toDo: "To Do"
+    },
+
+    // Bills
+    bills: {
+      upcomingBills: "Upcoming Bills",
+      overdueBills: "Overdue Bills",
+      markPaid: "Mark Paid",
+      dueDate: "Due Date",
+      due: "Due",
+      dueToday: "Due Today",
+      dueTomorrow: "Due Tomorrow",
+      daysOverdue: "days overdue",
+      dayOverdue: "day overdue",
+      days: "days",
+      noUpcomingBills: "No upcoming bills in the next 30 days",
+      noOverdueBills: "No overdue bills",
+      failedToLoadAlerts: "Failed to load bill alerts",
+      errorMarkingPaid: "Error marking bill as paid",
+      markedAsPaid: "Bill marked as paid",
+      utilities: {
+        eau: "Water",
+        energie: "Energy",
+        telephone: "Phone",
+        internet: "Internet"
+      }
+    },
+
+    // Transactions
+    transactions: {
+      title: "Transactions",
+      subtitle: "Manage your financial transactions",
+      addNewTransaction: "Add New Transaction",
+      referenceAmounts: "Reference Amounts",
+      totalIncome: "Total Income",
+      totalExpenses: "Total Expenses",
+      netIncome: "Net Income",
+      startDate: "Start Date",
+      endDate: "End Date",
+      type: "Type",
+      category: "Category",
+      loft: "Loft",
+      currency: "Currency",
+      paymentMethod: "Payment Method",
+      amount: "Amount",
+      equivalent: "Equivalent",
+      ratio: "Ratio",
+      income: "Income",
+      expense: "Expense",
+      pending: "Pending",
+      completed: "Completed",
+      failed: "Failed",
+      // Filters and controls
+      allTypes: "All Types",
+      allCategories: "All Categories",
+      allLofts: "All Lofts",
+      allCurrencies: "All Currencies",
+      allPaymentMethods: "All Payment Methods",
+      filterBy: "Filter by",
+      selectDate: "Select date",
+      selectDateRange: "Select date range",
+      noTransactions: "No transactions found",
+      showingResults: "Showing {count} results",
+      // Bill types
+      energyBill: "Energy Bill",
+      waterBill: "Water Bill",
+      phoneBill: "Phone Bill",
+      internetBill: "Internet Bill",
+      rentPayment: "Rent Payment",
+      // Transaction descriptions
+      energyBillPayment: "Energy bill payment for",
+      waterBillPayment: "Water bill payment for",
+      phoneBillPayment: "Phone bill payment for",
+      internetBillPayment: "Internet bill payment for",
+      rentLocation: "Rent for",
+      // Actions
+      actions: "Actions",
+      viewDetails: "View Details",
+      editTransaction: "Edit Transaction",
+      deleteTransaction: "Delete Transaction"
+    },
+
+    // Tasks
+    tasks: {
+      title: "Tasks",
+      subtitle: "Manage and track your tasks",
+      addTask: "Add Task",
+      editTask: "Edit Task",
+      viewTask: "View Task",
+      deleteTask: "Delete Task",
+      assignedTo: "Assigned to",
+      dueDate: "Due Date",
+      status: "Status",
+      priority: "Priority",
+      description: "Description",
+      noTasks: "No tasks found",
+      createTask: "Create Task",
+      updateTask: "Update Task",
+      taskCreated: "Task created successfully",
+      taskUpdated: "Task updated successfully",
+      taskDeleted: "Task deleted successfully",
+      dueDateFormat: "Due by {date}",
+      noDueDate: "No due date set",
+      overdue: "Overdue",
+      dueToday: "Due today",
+      dueTomorrow: "Due tomorrow",
+      yourTasks: "Your Tasks",
+      updateStatus: "Update Status",
+      filters: {
+        filterByStatus: "Filter by Status",
+        allStatuses: "All Statuses",
+        startDate: "Start Date",
+        endDate: "End Date"
+      },
+      status: {
+        todo: "To Do",
+        inProgress: "In Progress", 
+        completed: "Completed"
+      },
+      priority: {
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+        urgent: "Urgent"
+      }
+    },
+
+    // Lofts
+    lofts: {
+      title: "Lofts",
+      subtitle: "Manage your loft properties",
+      addLoft: "Add Loft",
+      editLoft: "Edit Loft",
+      viewLoft: "View Loft",
+      deleteLoft: "Delete Loft",
+      loftName: "Loft Name",
+      address: "Address",
+      price: "Price",
+      status: "Status",
+      owner: "Owner",
+      description: "Description",
+      noLofts: "No lofts found",
+      createLoft: "Create Loft",
+      updateLoft: "Update Loft",
+      loftCreated: "Loft created successfully",
+      loftUpdated: "Loft updated successfully",
+      loftDeleted: "Loft deleted successfully",
+      pricePerMonth: "Price per Month",
+      monthlyRent: "Monthly Rent",
+      companyShare: "Company Share",
+      zoneArea: "Zone Area",
+      filterByStatus: "Filter by Status",
+      filterByOwner: "Filter by Owner",
+      filterByZoneArea: "Filter by Zone Area",
+      allStatuses: "All Statuses",
+      allOwners: "All Owners",
+      allZoneAreas: "All Zone Areas",
+      unknown: "Unknown",
+      noLoftsMatch: "No lofts match the selected filters",
+      deleteConfirm: "Are you sure you want to delete this loft?",
+      status: {
+        available: "Available",
+        occupied: "Occupied",
+        maintenance: "Maintenance"
+      }
+    },
+
+    // Common
+    common: {
+      loading: "Loading...",
+      save: "Save",
+      cancel: "Cancel",
+      edit: "Edit",
+      delete: "Delete",
+      view: "View",
+      add: "Add",
+      update: "Update",
+      create: "Create",
+      back: "Back",
+      selectOption: "Select an option",
+      none: "None",
+      saving: "Saving...",
+      success: "Success",
+      error: "Error",
+      pickDate: "Pick a date",
+      pickDateRange: "Pick a date range",
+      search: "Search",
+      filter: "Filter",
+      sort: "Sort",
+      export: "Export",
+      import: "Import",
+      refresh: "Refresh",
+      close: "Close",
+      open: "Open",
+      yes: "Yes",
+      no: "No",
+      confirm: "Confirm",
+      total: "Total",
+      subtotal: "Subtotal",
+      quantity: "Quantity",
+      price: "Price",
+      date: "Date",
+      time: "Time",
+      name: "Name",
+      email: "Email",
+      phone: "Phone",
+      address: "Address",
+      city: "City",
+      country: "Country",
+      zipCode: "Zip Code"
+    },
+
+    // Theme
+    theme: {
+      light: "Light",
+      dark: "Dark",
+      system: "System"
+    }
+  },
+
+  fr: {
+    // Landing Page
+    landing: {
+      title: "Système de Gestion de Lofts",
+      subtitle: "Plateforme SaaS professionnelle pour la gestion de propriétés loft",
+      description: "Rationalisez vos opérations de gestion de lofts avec notre plateforme complète. Gérez les propriétés, suivez les finances, assignez des tâches, et plus encore.",
+      getStarted: "Commencer",
+      signIn: "Se Connecter",
+      chooseLanguage: "Choisir la Langue",
+      features: {
+        title: "Fonctionnalités Clés",
+        property: {
+          title: "Gestion Immobilière",
+          description: "Gérez vos propriétés loft avec des informations détaillées et un suivi de statut"
+        },
+        financial: {
+          title: "Suivi Financier",
+          description: "Suivez les revenus, dépenses et générez des rapports financiers complets"
+        },
+        tasks: {
+          title: "Gestion des Tâches",
+          description: "Assignez et suivez les tâches avec des fonctionnalités de collaboration d'équipe"
+        },
+        notifications: {
+          title: "Notifications Intelligentes",
+          description: "Restez informé avec des notifications en temps réel et des rappels de factures"
+        }
+      }
+    },
+
+    // Authentication
+    auth: {
+      welcomeBack: "Bon retour",
+      signInDescription: "Entrez vos identifiants pour accéder au système de gestion de lofts",
+      signUpTitle: "Créer un Compte",
+      signUpDescription: "Créez votre compte pour commencer à gérer des lofts",
+      email: "Email",
+      password: "Mot de passe",
+      confirmPassword: "Confirmer le mot de passe",
+      fullName: "Nom complet",
+      enterEmail: "Entrez votre email",
+      enterPassword: "Entrez votre mot de passe",
+      confirmPasswordPlaceholder: "Confirmez votre mot de passe",
+      enterFullName: "Entrez votre nom complet",
+      forgotPassword: "Mot de passe oublié ?",
+      signIn: "Se Connecter",
+      signUp: "S'Inscrire",
+      signOut: "Se Déconnecter",
+      signingIn: "Connexion...",
+      signingUp: "Inscription...",
+      noAccount: "Vous n'avez pas de compte ?",
+      haveAccount: "Vous avez déjà un compte ?",
+      demoAccounts: "Comptes de Démonstration :",
+      admin: "Administrateur",
+      manager: "Gestionnaire",
+      member: "Membre",
+      registrationFailed: "Échec de l'inscription",
+      unexpectedError: "Une erreur inattendue s'est produite"
+    },
+
+    // Navigation
+    nav: {
+      dashboard: "Tableau de Bord",
+      executive: "Tableau de Bord Exécutif",
+      conversations: "Conversations",
+      lofts: "Lofts",
+      tasks: "Tâches",
+      transactions: "Transactions",
+      teams: "Équipes",
+      owners: "Propriétaires",
+      reports: "Rapports",
+      notifications: "Notifications",
+      settings: "Paramètres",
+      categories: "Catégories",
+      currencies: "Devises",
+      zoneAreas: "Zones Géographiques",
+      paymentMethods: "Méthodes de Paiement",
+      internetConnections: "Connexions Internet",
+      application: "Application"
+    },
+
+    // Dashboard
+    dashboard: {
+      title: "Tableau de Bord",
+      subtitle: "Aperçu de votre système de gestion de lofts",
+      totalLofts: "Total des Lofts",
+      occupiedLofts: "Occupés",
+      activeTasks: "Tâches Actives",
+      inProgress: "En cours",
+      monthlyRevenue: "Revenus Mensuels",
+      thisMonth: "Ce mois",
+      teams: "Équipes",
+      activeTeams: "Équipes actives",
+      billMonitoring: "Surveillance des Factures",
+      updated: "Mis à jour",
+      overdue: "En Retard",
+      billsPastDue: "Factures en retard",
+      dueToday: "Échues Aujourd'hui",
+      billsDueNow: "Factures échues maintenant",
+      upcoming: "À Venir",
+      next30Days: "30 prochains jours",
+      active: "Actif",
+      loftsWithBills: "Lofts avec factures",
+      systemStatus: "État du Système",
+      allBillsCurrent: "Toutes les factures sont à jour",
+      actionRequired: "Action requise",
+      attentionNeeded: "Attention nécessaire",
+      revenueVsExpenses: "Revenus vs Dépenses",
+      monthlyFinancialOverview: "Aperçu financier mensuel",
+      revenue: "Revenus",
+      expenses: "Dépenses",
+      recentTasks: "Tâches Récentes",
+      latestTaskUpdates: "Dernières mises à jour des tâches",
+      due: "Échéance",
+      welcomeBack: "Bon retour, {name}!",
+      someDataError: "Certaines données n'ont pas pu être chargées",
+      toDo: "À Faire"
+    },
+
+    // Bills
+    bills: {
+      upcomingBills: "Factures à Venir",
+      overdueBills: "Factures en Retard",
+      markPaid: "Marquer Payé",
+      dueDate: "Échéance",
+      due: "Échéance",
+      dueToday: "Échue Aujourd'hui",
+      dueTomorrow: "Échue Demain",
+      daysOverdue: "jours de retard",
+      dayOverdue: "jour de retard",
+      days: "jours",
+      noUpcomingBills: "Aucune facture à venir dans les 30 prochains jours",
+      noOverdueBills: "Aucune facture en retard",
+      failedToLoadAlerts: "Échec du chargement des alertes de factures",
+      errorMarkingPaid: "Erreur lors du marquage de la facture comme payée",
+      markedAsPaid: "Facture marquée comme payée",
+      utilities: {
+        eau: "Eau",
+        energie: "Énergie",
+        telephone: "Téléphone",
+        internet: "Internet"
+      }
+    },
+
+    // Transactions
+    transactions: {
+      title: "Transactions",
+      subtitle: "Gérez vos transactions financières",
+      addNewTransaction: "Ajouter une Nouvelle Transaction",
+      referenceAmounts: "Montants de Référence",
+      totalIncome: "Total des Revenus",
+      totalExpenses: "Total des Dépenses",
+      netIncome: "Revenus Nets",
+      startDate: "Date de Début",
+      endDate: "Date de Fin",
+      type: "Type",
+      category: "Catégorie",
+      loft: "Loft",
+      currency: "Devise",
+      paymentMethod: "Méthode de Paiement",
+      amount: "Montant",
+      equivalent: "Équivalent",
+      ratio: "Ratio",
+      income: "Revenus",
+      expense: "Dépenses",
+      pending: "En Attente",
+      completed: "Terminé",
+      failed: "Échoué",
+      // Filters and controls
+      allTypes: "Tous les Types",
+      allCategories: "Toutes les Catégories",
+      allLofts: "Tous les Lofts",
+      allCurrencies: "Toutes les Devises",
+      allPaymentMethods: "Toutes les Méthodes de Paiement",
+      filterBy: "Filtrer par",
+      selectDate: "Sélectionner une date",
+      selectDateRange: "Sélectionner une plage de dates",
+      noTransactions: "Aucune transaction trouvée",
+      showingResults: "Affichage de {count} résultats",
+      // Bill types
+      energyBill: "Facture d'Énergie",
+      waterBill: "Facture d'Eau",
+      phoneBill: "Facture de Téléphone",
+      internetBill: "Facture Internet",
+      rentPayment: "Paiement de Loyer",
+      // Transaction descriptions
+      energyBillPayment: "Paiement facture énergie pour",
+      waterBillPayment: "Paiement facture eau pour",
+      phoneBillPayment: "Paiement facture téléphone pour",
+      internetBillPayment: "Paiement facture internet pour",
+      rentLocation: "Loyer pour",
+      // Actions
+      actions: "Actions",
+      viewDetails: "Voir les Détails",
+      editTransaction: "Modifier la Transaction",
+      deleteTransaction: "Supprimer la Transaction"
+    },
+
+    // Tasks
+    tasks: {
+      title: "Tâches",
+      subtitle: "Gérez et suivez vos tâches",
+      addTask: "Ajouter une Tâche",
+      editTask: "Modifier la Tâche",
+      viewTask: "Voir la Tâche",
+      deleteTask: "Supprimer la Tâche",
+      assignedTo: "Assigné à",
+      dueDate: "Date d'Échéance",
+      status: "Statut",
+      priority: "Priorité",
+      description: "Description",
+      noTasks: "Aucune tâche trouvée",
+      createTask: "Créer une Tâche",
+      updateTask: "Mettre à Jour la Tâche",
+      taskCreated: "Tâche créée avec succès",
+      taskUpdated: "Tâche mise à jour avec succès",
+      taskDeleted: "Tâche supprimée avec succès",
+      dueDateFormat: "Échéance le {date}",
+      noDueDate: "Aucune date d'échéance définie",
+      overdue: "En Retard",
+      dueToday: "Échue aujourd'hui",
+      dueTomorrow: "Échue demain",
+      yourTasks: "Vos Tâches",
+      updateStatus: "Mettre à Jour le Statut",
+      filters: {
+        filterByStatus: "Filtrer par Statut",
+        allStatuses: "Tous les Statuts",
+        startDate: "Date de Début",
+        endDate: "Date de Fin"
+      },
+      status: {
+        todo: "À Faire",
+        inProgress: "En Cours",
+        completed: "Terminé"
+      },
+      priority: {
+        low: "Faible",
+        medium: "Moyenne",
+        high: "Élevée",
+        urgent: "Urgente"
+      }
+    },
+
+    // Lofts
+    lofts: {
+      title: "Lofts",
+      subtitle: "Gérez vos propriétés loft",
+      addLoft: "Ajouter un Loft",
+      editLoft: "Modifier le Loft",
+      viewLoft: "Voir le Loft",
+      deleteLoft: "Supprimer le Loft",
+      loftName: "Nom du Loft",
+      address: "Adresse",
+      price: "Prix",
+      status: "Statut",
+      owner: "Propriétaire",
+      description: "Description",
+      noLofts: "Aucun loft trouvé",
+      createLoft: "Créer un Loft",
+      updateLoft: "Mettre à Jour le Loft",
+      loftCreated: "Loft créé avec succès",
+      loftUpdated: "Loft mis à jour avec succès",
+      loftDeleted: "Loft supprimé avec succès",
+      pricePerMonth: "Prix par Mois",
+      monthlyRent: "Loyer Mensuel",
+      companyShare: "Part de l'Entreprise",
+      zoneArea: "Zone",
+      filterByStatus: "Filtrer par Statut",
+      filterByOwner: "Filtrer par Propriétaire",
+      filterByZoneArea: "Filtrer par Zone",
+      allStatuses: "Tous les Statuts",
+      allOwners: "Tous les Propriétaires",
+      allZoneAreas: "Toutes les Zones",
+      unknown: "Inconnu",
+      noLoftsMatch: "Aucun loft ne correspond aux filtres sélectionnés",
+      deleteConfirm: "Êtes-vous sûr de vouloir supprimer ce loft ?",
+      status: {
+        available: "Disponible",
+        occupied: "Occupé",
+        maintenance: "Maintenance"
+      }
+    },
+
+    // Common
+    common: {
+      loading: "Chargement...",
+      save: "Enregistrer",
+      cancel: "Annuler",
+      edit: "Modifier",
+      delete: "Supprimer",
+      view: "Voir",
+      add: "Ajouter",
+      update: "Mettre à jour",
+      create: "Créer",
+      back: "Retour",
+      selectOption: "Sélectionner une option",
+      none: "Aucun",
+      saving: "Enregistrement...",
+      success: "Succès",
+      error: "Erreur",
+      pickDate: "Choisir une date",
+      pickDateRange: "Choisir une plage de dates",
+      search: "Rechercher",
+      filter: "Filtrer",
+      sort: "Trier",
+      export: "Exporter",
+      import: "Importer",
+      refresh: "Actualiser",
+      close: "Fermer",
+      open: "Ouvrir",
+      yes: "Oui",
+      no: "Non",
+      confirm: "Confirmer",
+      total: "Total",
+      subtotal: "Sous-total",
+      quantity: "Quantité",
+      price: "Prix",
+      date: "Date",
+      time: "Heure",
+      name: "Nom",
+      email: "Email",
+      phone: "Téléphone",
+      address: "Adresse",
+      city: "Ville",
+      country: "Pays",
+      zipCode: "Code Postal"
+    },
+
+    // Theme
+    theme: {
+      light: "Clair",
+      dark: "Sombre",
+      system: "Système"
+    }
+  },
+
+  ar: {
+    // Landing Page
+    landing: {
+      title: "نظام إدارة اللوفت",
+      subtitle: "منصة SaaS احترافية لإدارة عقارات اللوفت",
+      description: "قم بتبسيط عمليات إدارة اللوفت الخاصة بك مع منصتنا الشاملة. إدارة العقارات، تتبع الأموال، تعيين المهام، والمزيد.",
+      getStarted: "ابدأ الآن",
+      signIn: "تسجيل الدخول",
+      chooseLanguage: "اختر اللغة",
+      features: {
+        title: "الميزات الرئيسية",
+        property: {
+          title: "إدارة العقارات",
+          description: "إدارة عقارات اللوفت الخاصة بك مع معلومات مفصلة وتتبع الحالة"
+        },
+        financial: {
+          title: "التتبع المالي",
+          description: "تتبع الإيرادات والمصروفات وإنشاء تقارير مالية شاملة"
+        },
+        tasks: {
+          title: "إدارة المهام",
+          description: "تعيين وتتبع المهام مع ميزات التعاون الجماعي"
+        },
+        notifications: {
+          title: "الإشعارات الذكية",
+          description: "ابق محدثاً مع الإشعارات في الوقت الفعلي وتذكيرات الفواتير"
+        }
+      }
+    },
+
+    // Authentication
+    auth: {
+      welcomeBack: "مرحباً بعودتك",
+      signInDescription: "أدخل بياناتك للوصول إلى نظام إدارة اللوفت",
+      signUpTitle: "إنشاء حساب",
+      signUpDescription: "أنشئ حسابك لبدء إدارة اللوفت",
+      email: "البريد الإلكتروني",
+      password: "كلمة المرور",
+      confirmPassword: "تأكيد كلمة المرور",
+      fullName: "الاسم الكامل",
+      enterEmail: "أدخل بريدك الإلكتروني",
+      enterPassword: "أدخل كلمة المرور",
+      confirmPasswordPlaceholder: "أكد كلمة المرور",
+      enterFullName: "أدخل اسمك الكامل",
+      forgotPassword: "نسيت كلمة المرور؟",
+      signIn: "تسجيل الدخول",
+      signUp: "إنشاء حساب",
+      signOut: "تسجيل الخروج",
+      signingIn: "جاري تسجيل الدخول...",
+      signingUp: "جاري إنشاء الحساب...",
+      noAccount: "ليس لديك حساب؟",
+      haveAccount: "لديك حساب بالفعل؟",
+      demoAccounts: "حسابات تجريبية:",
+      admin: "مدير",
+      manager: "مدير",
+      member: "عضو",
+      registrationFailed: "فشل في التسجيل",
+      unexpectedError: "حدث خطأ غير متوقع"
+    },
+
+    // Navigation
+    nav: {
+      dashboard: "لوحة التحكم",
+      executive: "لوحة التحكم التنفيذية",
+      conversations: "المحادثات",
+      lofts: "اللوفت",
+      tasks: "المهام",
+      transactions: "المعاملات",
+      teams: "الفرق",
+      owners: "الملاك",
+      reports: "التقارير",
+      notifications: "الإشعارات",
+      settings: "الإعدادات",
+      categories: "الفئات",
+      currencies: "العملات",
+      zoneAreas: "المناطق",
+      paymentMethods: "طرق الدفع",
+      internetConnections: "اتصالات الإنترنت",
+      application: "التطبيق"
+    },
+
+    // Dashboard
+    dashboard: {
+      title: "لوحة التحكم",
+      subtitle: "نظرة عامة على نظام إدارة اللوفت الخاص بك",
+      totalLofts: "إجمالي اللوفت",
+      occupiedLofts: "مشغول",
+      activeTasks: "المهام النشطة",
+      inProgress: "قيد التنفيذ",
+      monthlyRevenue: "الإيرادات الشهرية",
+      thisMonth: "هذا الشهر",
+      teams: "الفرق",
+      activeTeams: "الفرق النشطة",
+      billMonitoring: "مراقبة الفواتير",
+      updated: "محدث",
+      overdue: "متأخر",
+      billsPastDue: "فواتير متأخرة",
+      dueToday: "مستحقة اليوم",
+      billsDueNow: "فواتير مستحقة الآن",
+      upcoming: "قادمة",
+      next30Days: "الـ 30 يوماً القادمة",
+      active: "نشط",
+      loftsWithBills: "لوفت مع فواتير",
+      systemStatus: "حالة النظام",
+      allBillsCurrent: "جميع الفواتير حالية",
+      actionRequired: "مطلوب إجراء",
+      attentionNeeded: "يحتاج انتباه",
+      revenueVsExpenses: "الإيرادات مقابل المصروفات",
+      monthlyFinancialOverview: "نظرة عامة مالية شهرية",
+      revenue: "الإيرادات",
+      expenses: "المصروفات",
+      recentTasks: "المهام الأخيرة",
+      latestTaskUpdates: "آخر تحديثات المهام",
+      due: "مستحق",
+      welcomeBack: "مرحباً بعودتك، {name}!",
+      someDataError: "لا يمكن تحميل بعض البيانات",
+      toDo: "للقيام بها",
+      completed: "مكتملة"
+    },
+
+    // Bills
+    bills: {
+      upcomingBills: "الفواتير القادمة",
+      overdueBills: "الفواتير المتأخرة",
+      markPaid: "تم الدفع",
+      dueDate: "تاريخ الاستحقاق",
+      due: "مستحق",
+      dueToday: "مستحقة اليوم",
+      dueTomorrow: "مستحقة غداً",
+      daysOverdue: "أيام متأخرة",
+      dayOverdue: "يوم متأخر",
+      days: "أيام",
+      noUpcomingBills: "لا توجد فواتير قادمة في الـ 30 يوماً القادمة",
+      noOverdueBills: "لا توجد فواتير متأخرة",
+      failedToLoadAlerts: "فشل في تحميل تنبيهات الفواتير",
+      errorMarkingPaid: "خطأ في تحديد الفاتورة كمدفوعة",
+      markedAsPaid: "تم تحديد الفاتورة كمدفوعة",
+      utilities: {
+        eau: "المياه",
+        energie: "الطاقة",
+        telephone: "الهاتف",
+        internet: "الإنترنت"
+      }
+    },
+
+    // Transactions
+    transactions: {
+      title: "المعاملات",
+      subtitle: "إدارة معاملاتك المالية",
+      addNewTransaction: "إضافة معاملة جديدة",
+      referenceAmounts: "المبالغ المرجعية",
+      totalIncome: "إجمالي الإيرادات",
+      totalExpenses: "إجمالي المصروفات",
+      netIncome: "صافي الإيرادات",
+      startDate: "تاريخ البداية",
+      endDate: "تاريخ النهاية",
+      type: "النوع",
+      category: "الفئة",
+      loft: "اللوفت",
+      currency: "العملة",
+      paymentMethod: "طريقة الدفع",
+      amount: "المبلغ",
+      equivalent: "المعادل",
+      ratio: "النسبة",
+      income: "إيرادات",
+      expense: "مصروفات",
+      pending: "في الانتظار",
+      completed: "مكتمل",
+      failed: "فشل",
+      // Filters and controls
+      allTypes: "جميع الأنواع",
+      allCategories: "جميع الفئات",
+      allLofts: "جميع اللوفت",
+      allCurrencies: "جميع العملات",
+      allPaymentMethods: "جميع طرق الدفع",
+      filterBy: "تصفية حسب",
+      selectDate: "اختر التاريخ",
+      selectDateRange: "اختر نطاق التاريخ",
+      noTransactions: "لا توجد معاملات",
+      showingResults: "عرض {count} نتيجة",
+      // Bill types
+      energyBill: "فاتورة الطاقة",
+      waterBill: "فاتورة المياه",
+      phoneBill: "فاتورة الهاتف",
+      internetBill: "فاتورة الإنترنت",
+      rentPayment: "دفع الإيجار",
+      // Transaction descriptions
+      energyBillPayment: "دفع فاتورة الطاقة لـ",
+      waterBillPayment: "دفع فاتورة المياه لـ",
+      phoneBillPayment: "دفع فاتورة الهاتف لـ",
+      internetBillPayment: "دفع فاتورة الإنترنت لـ",
+      rentLocation: "إيجار",
+      // Actions
+      actions: "الإجراءات",
+      viewDetails: "عرض التفاصيل",
+      editTransaction: "تعديل المعاملة",
+      deleteTransaction: "حذف المعاملة"
+    },
+
+    // Tasks
+    tasks: {
+      title: "المهام",
+      subtitle: "إدارة وتتبع مهامك",
+      addTask: "إضافة مهمة",
+      editTask: "تعديل المهمة",
+      viewTask: "عرض المهمة",
+      deleteTask: "حذف المهمة",
+      assignedTo: "مُعيَّن إلى",
+      dueDate: "تاريخ الاستحقاق",
+      status: "الحالة",
+      priority: "الأولوية",
+      description: "الوصف",
+      noTasks: "لا توجد مهام",
+      createTask: "إنشاء مهمة",
+      updateTask: "تحديث المهمة",
+      taskCreated: "تم إنشاء المهمة بنجاح",
+      taskUpdated: "تم تحديث المهمة بنجاح",
+      taskDeleted: "تم حذف المهمة بنجاح",
+      dueDateFormat: "مستحقة في {date}",
+      noDueDate: "لا يوجد تاريخ استحقاق محدد",
+      overdue: "متأخرة",
+      dueToday: "مستحقة اليوم",
+      dueTomorrow: "مستحقة غداً",
+      yourTasks: "مهامك",
+      updateStatus: "تحديث الحالة",
+      filters: {
+        filterByStatus: "تصفية حسب الحالة",
+        allStatuses: "جميع الحالات",
+        startDate: "تاريخ البداية",
+        endDate: "تاريخ النهاية"
+      },
+      status: {
+        todo: "للقيام بها",
+        inProgress: "قيد التنفيذ",
+        completed: "مكتملة"
+      },
+      priority: {
+        low: "منخفضة",
+        medium: "متوسطة",
+        high: "عالية",
+        urgent: "عاجلة"
+      }
+    },
+
+    // Lofts
+    lofts: {
+      title: "اللوفت",
+      subtitle: "إدارة عقارات اللوفت الخاصة بك",
+      addLoft: "إضافة لوفت",
+      editLoft: "تعديل اللوفت",
+      viewLoft: "عرض اللوفت",
+      deleteLoft: "حذف اللوفت",
+      loftName: "اسم اللوفت",
+      address: "العنوان",
+      price: "السعر",
+      status: "الحالة",
+      owner: "المالك",
+      description: "الوصف",
+      noLofts: "لا توجد لوفت",
+      createLoft: "إنشاء لوفت",
+      updateLoft: "تحديث اللوفت",
+      loftCreated: "تم إنشاء اللوفت بنجاح",
+      loftUpdated: "تم تحديث اللوفت بنجاح",
+      loftDeleted: "تم حذف اللوفت بنجاح",
+      pricePerMonth: "السعر شهرياً",
+      monthlyRent: "الإيجار الشهري",
+      companyShare: "حصة الشركة",
+      zoneArea: "المنطقة",
+      filterByStatus: "تصفية حسب الحالة",
+      filterByOwner: "تصفية حسب المالك",
+      filterByZoneArea: "تصفية حسب المنطقة",
+      allStatuses: "جميع الحالات",
+      allOwners: "جميع الملاك",
+      allZoneAreas: "جميع المناطق",
+      unknown: "غير معروف",
+      noLoftsMatch: "لا توجد لوفت تطابق المرشحات المحددة",
+      deleteConfirm: "هل أنت متأكد من حذف هذا اللوفت؟",
+      status: {
+        available: "متاح",
+        occupied: "مشغول",
+        maintenance: "صيانة"
+      }
+    },
+
+    // Common
+    common: {
+      loading: "جاري التحميل...",
+      save: "حفظ",
+      cancel: "إلغاء",
+      edit: "تعديل",
+      delete: "حذف",
+      view: "عرض",
+      add: "إضافة",
+      update: "تحديث",
+      create: "إنشاء",
+      back: "رجوع",
+      selectOption: "اختر خياراً",
+      none: "لا شيء",
+      saving: "جاري الحفظ...",
+      success: "نجح",
+      error: "خطأ",
+      pickDate: "اختر تاريخاً",
+      pickDateRange: "اختر نطاق تاريخ",
+      search: "بحث",
+      filter: "تصفية",
+      sort: "ترتيب",
+      export: "تصدير",
+      import: "استيراد",
+      refresh: "تحديث",
+      close: "إغلاق",
+      open: "فتح",
+      yes: "نعم",
+      no: "لا",
+      confirm: "تأكيد",
+      total: "المجموع",
+      subtotal: "المجموع الفرعي",
+      quantity: "الكمية",
+      price: "السعر",
+      date: "التاريخ",
+      time: "الوقت",
+      name: "الاسم",
+      email: "البريد الإلكتروني",
+      phone: "الهاتف",
+      address: "العنوان",
+      city: "المدينة",
+      country: "البلد",
+      zipCode: "الرمز البريدي"
+    },
+
+    // Theme
+    theme: {
+      light: "فاتح",
+      dark: "داكن",
+      system: "النظام"
+    }
+  }
+}

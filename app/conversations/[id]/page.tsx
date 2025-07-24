@@ -1,79 +1,54 @@
-copy "use client";
+import { requireAuth } from "@/lib/auth"
+import { getSimpleConversationMessages } from "@/lib/services/conversations-simple"
+import { SimpleConversationPageClient } from "@/components/conversations/simple-conversation-page-client"
+import { MessagesSquare, AlertTriangle } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Send } from 'lucide-react';
-import { Message } from '@/lib/types';
-
-const initialMessages: Message[] = [
-  { id: '1', text: 'Hey, how are you?', sender: 'them', timestamp: '10:00 AM' },
-  { id: '2', text: 'I am good, thanks! How about you?', sender: 'me', timestamp: '10:01 AM' },
-  { id: '3', text: 'Doing great! Ready for the meeting?', sender: 'them', timestamp: '10:02 AM' },
-];
-
-function MessageBubble({ message }: { message: Message }) {
-  const isMine = message.sender === 'me';
-  return (
-    <div className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
-      <div className={`rounded-lg px-4 py-2 max-w-xs lg:max-w-md ${isMine ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}>
-        <p>{message.text}</p>
-        <p className="text-xs text-right mt-1">{message.timestamp}</p>
-      </div>
-    </div>
-  );
+interface ConversationPageProps {
+  params: {
+    id: string
+  }
 }
 
-function MessageInput({ onSendMessage }: { onSendMessage: (text: string) => void }) {
-  const [message, setMessage] = useState('');
+export default async function ConversationPage({ params }: ConversationPageProps) {
+  const session = await requireAuth()
+  
+  try {
+    const messages = await getSimpleConversationMessages(params.id, session.user.id)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (message.trim()) {
-      onSendMessage(message);
-      setMessage('');
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="flex items-center gap-2 p-4 border-t">
-      <Input
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type a message..."
-        className="flex-1"
+    return (
+      <SimpleConversationPageClient
+        conversationId={params.id}
+        initialMessages={messages}
+        currentUserId={session.user.id}
       />
-      <Button type="submit" size="icon">
-        <Send className="h-5 w-5" />
-      </Button>
-    </form>
-  );
-}
-
-export default function ConversationPage({ params }: { params: { id: string } }) {
-  const [messages, setMessages] = useState(initialMessages);
-
-  const handleSendMessage = (text: string) => {
-    const newMessage: Message = {
-      id: String(messages.length + 1),
-      text,
-      sender: 'me',
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-    setMessages([...messages, newMessage]);
-  };
-
-  return (
-    <div className="flex flex-col h-full">
-      <div className="p-4 border-b">
-        <h2 className="text-xl font-semibold">John Doe</h2>
+    )
+  } catch (error) {
+    console.error('Error loading conversation:', error)
+    
+    return (
+      <div className="flex h-[calc(100vh-4rem)] items-center justify-center">
+        <div className="text-center max-w-md">
+          <AlertTriangle className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Conversation Error</h3>
+          <p className="text-muted-foreground mb-4">
+            Unable to load this conversation. This might be due to RLS policy issues.
+          </p>
+          <div className="bg-muted p-4 rounded-lg text-sm text-left mb-4">
+            <p className="font-medium mb-2">To fix the issue:</p>
+            <ol className="list-decimal list-inside space-y-1">
+              <li>Run: <code className="bg-background px-1 rounded">node scripts/fix-conversations-rls.js</code></li>
+              <li>Copy the SQL output to your Supabase SQL Editor</li>
+              <li>Execute the SQL script</li>
+              <li>Refresh this page</li>
+            </ol>
+          </div>
+          <Button asChild>
+            <Link href="/conversations">Back to Conversations</Link>
+          </Button>
+        </div>
       </div>
-      <div className="flex-1 p-4 space-y-4 overflow-y-auto">
-        {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
-        ))}
-      </div>
-      <MessageInput onSendMessage={handleSendMessage} />
-    </div>
-  );
+    )
+  }
 }

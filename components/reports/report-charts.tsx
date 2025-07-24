@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslation } from '@/lib/i18n/context'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   BarChart,
@@ -65,6 +66,7 @@ interface ReportChartsProps {
 }
 
 export default function ReportCharts({ loftRevenue, monthlyRevenue }: ReportChartsProps) {
+  const { t } = useTranslation();
   const top5Lofts = loftRevenue.slice(0, 5);
 
   return (
@@ -72,8 +74,8 @@ export default function ReportCharts({ loftRevenue, monthlyRevenue }: ReportChar
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card className="md:col-span-2 lg:col-span-1">
           <CardHeader>
-            <CardTitle>Top 5 Profitable Lofts</CardTitle>
-            <CardDescription>Your most valuable assets based on net profit.</CardDescription>
+            <CardTitle>{t('analytics.top5ProfitableLofts')}</CardTitle>
+            <CardDescription>{t('analytics.mostValuableAssets')}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -102,8 +104,8 @@ export default function ReportCharts({ loftRevenue, monthlyRevenue }: ReportChar
 
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Revenue & Expenses by Loft</CardTitle>
-            <CardDescription>A detailed look at the financial performance of each loft.</CardDescription>
+            <CardTitle>{t('analytics.revenueExpensesByLoft')}</CardTitle>
+            <CardDescription>{t('analytics.detailedFinancialPerformance')}</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -113,8 +115,8 @@ export default function ReportCharts({ loftRevenue, monthlyRevenue }: ReportChar
                 <YAxis />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
-                <Bar dataKey="revenue" fill="#82ca9d" name="Revenue" />
-                <Bar dataKey="expenses" fill="#8884d8" name="Expenses" />
+                <Bar dataKey="revenue" fill="#82ca9d" name={t('analytics.revenue')} />
+                <Bar dataKey="expenses" fill="#8884d8" name={t('analytics.expenses')} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -123,8 +125,8 @@ export default function ReportCharts({ loftRevenue, monthlyRevenue }: ReportChar
 
       <Card>
         <CardHeader>
-          <CardTitle>Monthly Financial Trend</CardTitle>
-          <CardDescription>Track your revenue and expenses for the current year.</CardDescription>
+          <CardTitle>{t('analytics.monthlyFinancialTrend')}</CardTitle>
+          <CardDescription>{t('analytics.trackRevenueExpenses')}</CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={400}>
@@ -134,8 +136,8 @@ export default function ReportCharts({ loftRevenue, monthlyRevenue }: ReportChar
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
-              <Line type="monotone" dataKey="revenue" stroke="#82ca9d" name="Revenue" activeDot={{ r: 8 }} />
-              <Line type="monotone" dataKey="expenses" stroke="#8884d8" name="Expenses" />
+              <Line type="monotone" dataKey="revenue" stroke="#82ca9d" name={t('analytics.revenue')} activeDot={{ r: 8 }} />
+              <Line type="monotone" dataKey="expenses" stroke="#8884d8" name={t('analytics.expenses')} />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>

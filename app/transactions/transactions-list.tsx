@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { useTranslation } from "@/lib/i18n/context"
+import { useTransactionTranslations } from "@/lib/hooks/use-transaction-translations"
 import type { Transaction, Category, Loft, Currency } from "@/lib/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -33,6 +35,8 @@ interface TransactionsListProps {
 }
 
 export function TransactionsList({ transactions, categories, lofts, currencies, paymentMethods, isAdmin }: TransactionsListProps) {
+  const { t } = useTranslation()
+  const { translateDescription, translateStatus, translatePaymentMethod, formatDate } = useTransactionTranslations()
   const [startDate, setStartDate] = React.useState<Date | undefined>()
   const [endDate, setEndDate] = React.useState<Date | undefined>()
   const [typeFilter, setTypeFilter] = React.useState<string>("all")
@@ -106,7 +110,7 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
       <div className="mb-6 grid gap-6 md:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>Total Income</CardTitle>
+            <CardTitle>{t('transactions.totalIncome')}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-green-600">
@@ -119,7 +123,7 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Total Expenses</CardTitle>
+            <CardTitle>{t('transactions.totalExpenses')}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold text-red-600">
@@ -132,7 +136,7 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Net Income</CardTitle>
+            <CardTitle>{t('transactions.netIncome')}</CardTitle>
           </CardHeader>
           <CardContent>
             <p className={`text-2xl font-bold ${netTotal >= 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -146,34 +150,34 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
         <div>
-          <Label htmlFor="start-date">Start Date</Label>
+          <Label htmlFor="start-date">{t('transactions.startDate')}</Label>
           <DatePicker date={startDate} setDate={setStartDate} />
         </div>
         <div>
-          <Label htmlFor="end-date">End Date</Label>
+          <Label htmlFor="end-date">{t('transactions.endDate')}</Label>
           <DatePicker date={endDate} setDate={setEndDate} />
         </div>
         <div>
-          <Label htmlFor="type-filter">Type</Label>
+          <Label htmlFor="type-filter">{t('transactions.type')}</Label>
           <Select value={typeFilter} onValueChange={setTypeFilter}>
             <SelectTrigger id="type-filter">
-              <SelectValue placeholder="All Types" />
+              <SelectValue placeholder={t('transactions.allTypes')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="income">Income</SelectItem>
-              <SelectItem value="expense">Expense</SelectItem>
+              <SelectItem value="all">{t('transactions.allTypes')}</SelectItem>
+              <SelectItem value="income">{t('transactions.income')}</SelectItem>
+              <SelectItem value="expense">{t('transactions.expense')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div>
-          <Label htmlFor="category-filter">Category</Label>
+          <Label htmlFor="category-filter">{t('transactions.category')}</Label>
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
             <SelectTrigger id="category-filter">
-              <SelectValue placeholder="All Categories" />
+              <SelectValue placeholder={t('transactions.allCategories')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="all">{t('transactions.allCategories')}</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category.id} value={category.id}>
                   {category.name}
@@ -183,13 +187,13 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
           </Select>
         </div>
         <div>
-          <Label htmlFor="loft-filter">Loft</Label>
+          <Label htmlFor="loft-filter">{t('transactions.loft')}</Label>
           <Select value={loftFilter} onValueChange={setLoftFilter}>
             <SelectTrigger id="loft-filter">
-              <SelectValue placeholder="All Lofts" />
+              <SelectValue placeholder={t('transactions.allLofts')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Lofts</SelectItem>
+              <SelectItem value="all">{t('transactions.allLofts')}</SelectItem>
               {lofts.map((loft) => (
                 <SelectItem key={loft.id} value={loft.id}>
                   {loft.name}
@@ -199,13 +203,13 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
           </Select>
         </div>
         <div>
-          <Label htmlFor="currency-filter">Currency</Label>
+          <Label htmlFor="currency-filter">{t('transactions.currency')}</Label>
           <Select value={currencyFilter} onValueChange={setCurrencyFilter}>
             <SelectTrigger id="currency-filter">
-              <SelectValue placeholder="All Currencies" />
+              <SelectValue placeholder={t('transactions.allCurrencies')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Currencies</SelectItem>
+              <SelectItem value="all">{t('transactions.allCurrencies')}</SelectItem>
               {currencies.map((currency) => (
                 <SelectItem key={currency.id} value={currency.id}>
                   {currency.name} ({currency.symbol})
@@ -215,13 +219,13 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
           </Select>
         </div>
         <div>
-          <Label htmlFor="payment-method-filter">Payment Method</Label>
+          <Label htmlFor="payment-method-filter">{t('transactions.paymentMethod')}</Label>
           <Select value={paymentMethodFilter} onValueChange={setPaymentMethodFilter}>
             <SelectTrigger id="payment-method-filter">
-              <SelectValue placeholder="All Payment Methods" />
+              <SelectValue placeholder={t('transactions.allPaymentMethods')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Payment Methods</SelectItem>
+              <SelectItem value="all">{t('transactions.allPaymentMethods')}</SelectItem>
               {paymentMethods.map((method) => (
                 <SelectItem key={method.id} value={method.id}>
                   {method.name}
@@ -238,41 +242,41 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-lg">{transaction.description}</CardTitle>
-                  <CardDescription>{new Date(transaction.date).toLocaleDateString()}</CardDescription>
+                  <CardTitle className="text-lg">{translateDescription(transaction.description)}</CardTitle>
+                  <CardDescription>{formatDate(transaction.date)}</CardDescription>
                 </div>
-                <Badge className={getStatusColor(transaction.status)}>{transaction.status}</Badge>
+                <Badge className={getStatusColor(transaction.status)}>{translateStatus(transaction.status)}</Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex justify-between">
-                <span className="text-sm text-muted-foreground">Amount:</span>
+                <span className="text-sm text-muted-foreground">{t('transactions.amount')}:</span>
                 <span className={`font-medium ${transaction.transaction_type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                   {transaction.transaction_type === 'income' ? '+' : '-'}{currencies.find(c => c.id === transaction.currency_id)?.symbol || '$'}{new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(transaction.amount)}
                 </span>
               </div>
               {transaction.equivalent_amount_default_currency !== null && transaction.equivalent_amount_default_currency !== undefined && transaction.currency_id !== currencies.find(c => c.is_default)?.id && (
                 <div className="flex justify-between">
-                  <span className="text-xs text-muted-foreground">Equivalent:</span>
+                  <span className="text-xs text-muted-foreground">{t('transactions.equivalent')}:</span>
                   <span className={`text-xs ${transaction.transaction_type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                    {defaultCurrencySymbol}{new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(transaction.equivalent_amount_default_currency)} (Ratio: {new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8, useGrouping: false }).format(transaction.ratio_at_transaction || 0)})
+                    {defaultCurrencySymbol}{new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(transaction.equivalent_amount_default_currency)} ({t('transactions.ratio')}: {new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8, useGrouping: false }).format(transaction.ratio_at_transaction || 0)})
                   </span>
                 </div>
               )}
               {transaction.payment_method_id && (
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Payment Method:</span>
-                  <span className="font-medium">{paymentMethods.find(pm => pm.id === transaction.payment_method_id)?.name}</span>
+                  <span className="text-sm text-muted-foreground">{t('transactions.paymentMethod')}:</span>
+                  <span className="font-medium">{translatePaymentMethod(paymentMethods.find(pm => pm.id === transaction.payment_method_id)?.name || '')}</span>
                 </div>
               )}
               <div className="mt-4 flex gap-2">
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/transactions/${transaction.id}`}>View</Link>
+                  <Link href={`/transactions/${transaction.id}`}>{t('common.view')}</Link>
                 </Button>
                 {isAdmin && (
                   <>
                     <Button variant="outline" size="sm" asChild>
-                      <Link href={`/transactions/${transaction.id}/edit`}>Edit</Link>
+                      <Link href={`/transactions/${transaction.id}/edit`}>{t('common.edit')}</Link>
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
@@ -282,16 +286,15 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                          <AlertDialogTitle>{t('transactions.deleteConfirmTitle')}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the
-                            transaction and remove its data from our servers.
+                            {t('transactions.deleteConfirmDescription')}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
                           <AlertDialogAction onClick={() => handleDelete(transaction.id)}>
-                            Continue
+                            {t('transactions.continue')}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -304,7 +307,7 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
         ))}
         {filteredTransactions.length === 0 && (
           <div className="col-span-full text-center text-muted-foreground">
-            No transactions match the selected filters.
+            {t('transactions.noTransactions')}
           </div>
         )}
       </div>

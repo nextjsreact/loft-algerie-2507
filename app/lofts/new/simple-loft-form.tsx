@@ -28,18 +28,29 @@ export function SimpleLoftForm() {
 
       if (result?.success) {
         toast({
-          title: "Success",
-          description: `Loft created with ID: ${result.loftId}`,
-          duration: 10000
+          title: "✅ Success",
+          description: `Loft "${formData.name}" created successfully`,
+          duration: 3000
         })
         setFormData({ name: "", address: "", price: "" }) // Reset form
+        setTimeout(() => {
+          window.history.back() // Go back to previous page
+        }, 1000)
+      } else {
+        toast({
+          title: "❌ Error",
+          description: "Failed to create loft - please try again",
+          variant: "destructive",
+          duration: 5000
+        })
       }
     } catch (error) {
+      console.error('Error creating loft:', error)
       toast({
-        title: "Error",
-        description: "Failed to create loft",
+        title: "❌ Error",
+        description: "Failed to create loft - please check your data and try again",
         variant: "destructive",
-        duration: 10000
+        duration: 5000
       })
     } finally {
       setIsSubmitting(false)

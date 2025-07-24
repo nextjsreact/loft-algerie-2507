@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useTranslation } from "@/lib/i18n/context"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -18,22 +19,23 @@ import { toast } from "@/components/ui/use-toast"
 import { createZoneArea, updateZoneArea, ZoneArea } from "@/app/actions/zone-areas" // Import updateZoneArea and ZoneArea
 import { useRouter } from "next/navigation"
 
-const FormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Zone area name must be at least 2 characters.",
-  }),
-})
+import { useEffect } from "react";
 
 interface ZoneAreaFormProps {
   zoneArea?: ZoneArea; // Optional zoneArea prop for editing
   onSuccess?: () => void; // Callback for success
 }
 
-import { useEffect } from "react"; // Import useEffect
-// ... other imports
-
 export function ZoneAreaForm({ zoneArea, onSuccess }: ZoneAreaFormProps) {
   const router = useRouter();
+  const { t } = useTranslation();
+  
+  const FormSchema = z.object({
+    name: z.string().min(2, {
+      message: t('zoneAreas.nameRequired'),
+    }),
+  });
+  
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -61,14 +63,14 @@ export function ZoneAreaForm({ zoneArea, onSuccess }: ZoneAreaFormProps) {
 
     if (result?.error) {
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: result.error,
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Success",
-        description: zoneArea ? "Zone area updated successfully." : "Zone area created successfully.",
+        title: t('common.success'),
+        description: zoneArea ? t('zoneAreas.updateSuccess') : t('zoneAreas.createSuccess'),
       });
       form.reset();
       if (onSuccess) {
@@ -88,15 +90,15 @@ export function ZoneAreaForm({ zoneArea, onSuccess }: ZoneAreaFormProps) {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Zone Area Name</FormLabel>
+                <FormLabel>{t('zoneAreas.zoneAreaName')}</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., Downtown, Uptown" {...field} />
+                  <Input placeholder={t('zoneAreas.namePlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">{zoneArea ? "Update Zone Area" : "Create Zone Area"}</Button>
+          <Button type="submit">{zoneArea ? t('zoneAreas.updateZoneArea') : t('zoneAreas.createZoneArea')}</Button>
         </form>
       </Form>
     </div>

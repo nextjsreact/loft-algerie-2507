@@ -8,6 +8,7 @@ interface NotificationProps {
   message: string;
   isRead: boolean;
   link?: string | null;
+  onClick?: () => void;
   onDismiss?: () => void;
   className?: string;
 }
@@ -17,6 +18,7 @@ const Notification: React.FC<NotificationProps> = ({
   message,
   isRead,
   link,
+  onClick,
   onDismiss,
   className,
 }) => {
@@ -53,31 +55,21 @@ const Notification: React.FC<NotificationProps> = ({
     </>
   );
 
-  return (
-    link ? (
-      <Link href={link} className="block">
-        <div
-          className={cn(
-            "flex items-center justify-between p-4 border rounded-md shadow-sm",
-            isRead ? "bg-gray-100 text-gray-600" : "bg-blue-500 text-white",
-            className
-          )}
-        >
-          {NotificationContent}
-        </div>
-      </Link>
-    ) : (
-      <div
-        className={cn(
-          "flex items-center justify-between p-4 border rounded-md shadow-sm",
-          isRead ? "bg-gray-100 text-gray-600" : "bg-blue-500 text-white",
-          className
-        )}
-      >
-        {NotificationContent}
-      </div>
-    )
+  const renderContent = () => (
+    <div
+      onClick={onClick}
+      className={cn(
+        "flex items-center justify-between p-4 border rounded-md shadow-sm",
+        isRead ? "bg-gray-100 text-gray-600" : "bg-blue-500 text-white",
+        "cursor-pointer",
+        className
+      )}
+    >
+      {NotificationContent}
+    </div>
   );
+
+  return link ? <Link href={link}>{renderContent()}</Link> : renderContent();
 };
 
 export { Notification };

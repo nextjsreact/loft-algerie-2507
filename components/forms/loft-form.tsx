@@ -1,372 +1,405 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { loftSchema, type LoftFormData } from "@/lib/validations"
-import type { Loft, LoftOwner } from "@/lib/types"
-import { ZoneArea, getZoneAreas } from "@/app/actions/zone-areas" // Import ZoneArea and getZoneAreas
-import { InternetConnectionType } from "@/lib/types" // Import InternetConnectionType
+import { useEffect, useState, useCallback } from "react"
+import type { Loft, LoftOwner, InternetConnectionType } from "@/lib/types"
+import type { ZoneArea } from "@/app/actions/zone-areas"
+import { Textarea } from "@/components/ui/textarea"
+import { useTranslation } from "@/lib/i18n/context"
 
 interface LoftFormProps {
-  loft?: Loft
   owners: LoftOwner[]
   zoneAreas: ZoneArea[]
-  internetConnectionTypes: InternetConnectionType[] // Add internetConnectionTypes prop
-  onSubmit: (data: LoftFormData) => Promise<void>
-  isSubmitting?: boolean
+  internetConnectionTypes: InternetConnectionType[]
+  onSubmit: (data: any) => Promise<void>
+  loft?: Loft | null
 }
 
-export function LoftForm({ loft, owners = [], zoneAreas = [], internetConnectionTypes = [], onSubmit, isSubmitting = false }: LoftFormProps) {
-  console.log('LoftForm props:', { owners, loft }) // Debug props
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
-  const router = useRouter()
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<LoftFormData>({
-    resolver: zodResolver(loftSchema),
-    defaultValues: loft
-      ? {
-          name: loft.name,
-          description: loft.description || "",
-          address: loft.address,
-          price_per_month: loft.price_per_month,
-          status: loft.status,
-          owner_id: loft.owner_id,
-          company_percentage: loft.company_percentage,
-          owner_percentage: loft.owner_percentage,
-          zone_area_id: loft.zone_area_id || "",
-          internet_connection_type_id: loft.internet_connection_type_id || "",
-          water_customer_code: loft.water_customer_code || "",
-          water_contract_code: loft.water_contract_code || "",
-          water_meter_number: loft.water_meter_number || "",
-          water_correspondent: loft.water_correspondent || "",
-          electricity_pdl_ref: loft.electricity_pdl_ref || "",
-          electricity_customer_number: loft.electricity_customer_number || "",
-          electricity_meter_number: loft.electricity_meter_number || "",
-          electricity_correspondent: loft.electricity_correspondent || "",
-          gas_pdl_ref: loft.gas_pdl_ref || "",
-          gas_customer_number: loft.gas_customer_number || "",
-          gas_meter_number: loft.gas_meter_number || "",
-          gas_correspondent: loft.gas_correspondent || "",
-          phone_number: loft.phone_number || "",
-        }
-      : {
-          status: "available",
-          company_percentage: 50,
-          owner_percentage: 50,
-          zone_area_id: "",
-          internet_connection_type_id: "",
-          water_customer_code: "",
-          water_contract_code: "",
-          water_meter_number: "",
-          water_correspondent: "",
-          electricity_pdl_ref: "",
-          electricity_customer_number: "",
-          electricity_meter_number: "",
-          electricity_correspondent: "",
-          gas_pdl_ref: "",
-          gas_customer_number: "",
-          gas_meter_number: "",
-          gas_correspondent: "",
-          phone_number: "",
-        },
+export function LoftForm({ owners, zoneAreas, internetConnectionTypes, onSubmit, loft }: LoftFormProps) {
+  const { t } = useTranslation()
+  const [formData, setFormData] = useState({
+    name: "",
+    address: "",
+    price_per_month: "",
+    owner_id: "",
+    zone_area_id: "",
+    internet_connection_type_id: "",
+    description: "",
+    water_customer_code: "",
+    water_contract_code: "",
+    water_meter_number: "",
+    electricity_pdl_ref: "",
+    electricity_customer_number: "",
+    electricity_meter_number: "",
+    gas_pdl_ref: "",
+    gas_customer_number: "",
+    gas_meter_number: "",
+    phone_number: "",
+    company_percentage: "",
+    owner_percentage: "",
+    frequence_paiement_eau: "",
+    prochaine_echeance_eau: "",
+    frequence_paiement_energie: "",
+    prochaine_echeance_energie: "",
+    frequence_paiement_telephone: "",
+    prochaine_echeance_telephone: "",
+    frequence_paiement_internet: "",
+    prochaine_echeance_internet: "",
   })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const companyPercentage = watch("company_percentage")
+  // Function to populate form data (extracted so we can reuse it)
+  const populateFormData = useCallback(() => {
+    if (loft && loft.id) {
+      console.log('✅ Populating form with loft data:', loft)
+      
+      const formDataToSet = {
+        name: loft.name || "",
+        address: loft.address || "",
+        price_per_month: loft.price_per_month?.toString() || "",
+        owner_id: loft.owner_id || "",
+        zone_area_id: loft.zone_area_id || "",
+        internet_connection_type_id: loft.internet_connection_type_id || "",
+        description: loft.description || "",
+        water_customer_code: loft.water_customer_code || "",
+        water_contract_code: loft.water_contract_code || "",
+        water_meter_number: loft.water_meter_number || "",
+        electricity_pdl_ref: loft.electricity_pdl_ref || "",
+        electricity_customer_number: loft.electricity_customer_number || "",
+        electricity_meter_number: loft.electricity_meter_number || "",
+        gas_pdl_ref: loft.gas_pdl_ref || "",
+        gas_customer_number: loft.gas_customer_number || "",
+        gas_meter_number: loft.gas_meter_number || "",
+        phone_number: loft.phone_number || "",
+        company_percentage: loft.company_percentage?.toString() || "",
+        owner_percentage: loft.owner_percentage?.toString() || "",
+        frequence_paiement_eau: loft.frequence_paiement_eau || "",
+        prochaine_echeance_eau: loft.prochaine_echeance_eau || "",
+        frequence_paiement_energie: loft.frequence_paiement_energie || "",
+        prochaine_echeance_energie: loft.prochaine_echeance_energie || "",
+        frequence_paiement_telephone: loft.frequence_paiement_telephone || "",
+        prochaine_echeance_telephone: loft.prochaine_echeance_telephone || "",
+        frequence_paiement_internet: loft.frequence_paiement_internet || "",
+        prochaine_echeance_internet: loft.prochaine_echeance_internet || "",
+      }
+      
+      console.log('🗂️ Setting form data:', formDataToSet)
+      setFormData(formDataToSet)
+    }
+  }, [loft])
 
-  const handleFormSubmit = async (data: LoftFormData) => {
-    setIsLoading(true)
-    setError("")
+  // Multiple useEffect hooks to catch different timing scenarios
+  useEffect(() => {
+    console.log('🔄 useEffect [loft] - loft changed:', loft?.id)
+    populateFormData()
+  }, [loft, populateFormData])
 
+  useEffect(() => {
+    console.log('🔄 useEffect [loft.id] - loft ID changed:', loft?.id)
+    if (loft?.id) {
+      // Small delay to ensure all data is loaded
+      setTimeout(() => {
+        populateFormData()
+      }, 50)
+    }
+  }, [loft?.id, populateFormData])
+
+  // Also populate on component mount if loft data is already available
+  useEffect(() => {
+    console.log('🔄 useEffect mount - checking for existing loft data')
+    if (loft?.id) {
+      populateFormData()
+    }
+  }, []) // Empty dependency array for mount only
+
+  const safeInternetConnectionTypes = Array.isArray(internetConnectionTypes) ? internetConnectionTypes : []
+
+  console.log("LoftForm component is rendering"); // Basic log to confirm client-side rendering
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    
     try {
-      await onSubmit(data)
-      // No automatic navigation - let parent component handle success
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred")
+      await onSubmit({
+        ...formData,
+        price_per_month: Number(formData.price_per_month),
+        company_percentage: Number(formData.company_percentage),
+        owner_percentage: Number(formData.owner_percentage),
+      })
+    } catch (error) {
+      console.error('Form submission error:', error)
     } finally {
-      setIsLoading(false)
+      setIsSubmitting(false)
     }
   }
 
   return (
-    <Card className="max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>{loft ? "Edit Loft" : "Add New Loft"}</CardTitle>
-        <CardDescription>{loft ? "Update loft information" : "Create a new loft property"}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+    <div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" {...register("name")} />
-              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-            </div>
+      
+      <form onSubmit={handleSubmit} className="space-y-8 max-w-4xl mx-auto p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-2">
+          <Label htmlFor="name">{t('lofts.loftName')} *</Label>
+          <Input id="name" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required />
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
-              <Select key={loft?.status} onValueChange={(value) => setValue("status", value as any)} defaultValue={loft?.status}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="available">Available</SelectItem>
-                  <SelectItem value="occupied">Occupied</SelectItem>
-                  <SelectItem value="maintenance">Maintenance</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
-            </div>
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="address">{t('lofts.loftAddress')} *</Label>
+          <Input id="address" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} required />
+        </div>
 
+        <div className="space-y-2">
+          <Label htmlFor="price">{t('lofts.pricePerMonth')} ($) *</Label>
+          <Input id="price" type="number" value={formData.price_per_month} onChange={(e) => setFormData({...formData, price_per_month: e.target.value})} required />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="owner">{t('lofts.owner')}</Label>
+          <Select value={formData.owner_id || ""} onValueChange={(value) => setFormData({...formData, owner_id: value})}>
+            <SelectTrigger><SelectValue placeholder={t('common.selectOption')} /></SelectTrigger>
+            <SelectContent>
+              {Array.isArray(owners) && owners.map((owner) => (
+                <SelectItem key={owner.id} value={owner.id}>{owner.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="zone">{t('lofts.zoneArea')}</Label>
+          <Select value={formData.zone_area_id || ""} onValueChange={(value) => setFormData({...formData, zone_area_id: value})}>
+            <SelectTrigger><SelectValue placeholder={t('common.selectOption')} /></SelectTrigger>
+            <SelectContent>
+              {Array.isArray(zoneAreas) && zoneAreas.map((zone) => (
+                <SelectItem key={zone.id} value={zone.id}>{zone.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="internet">{t('lofts.internetConnection')}</Label>
+          <Select value={formData.internet_connection_type_id || ""} onValueChange={(value) => setFormData({...formData, internet_connection_type_id: value})}>
+            <SelectTrigger><SelectValue placeholder={t('common.selectOption')} /></SelectTrigger>
+            <SelectContent>
+              {safeInternetConnectionTypes.map((connection) => (
+                <SelectItem key={connection.id} value={connection.id}>
+                  {connection.type} {connection.speed && `- ${connection.speed}`}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="company_percentage">{t('lofts.companyPercentage')} (%) *</Label>
+          <Input 
+            id="company_percentage" 
+            type="number" 
+            min="0" 
+            max="100" 
+            step="0.01"
+            value={formData.company_percentage} 
+            onChange={(e) => {
+              const companyPercentage = e.target.value
+              const ownerPercentage = companyPercentage && !isNaN(Number(companyPercentage)) 
+                ? (100 - Number(companyPercentage)).toString() 
+                : ""
+              setFormData({
+                ...formData, 
+                company_percentage: companyPercentage,
+                owner_percentage: ownerPercentage
+              })
+            }} 
+            required 
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="owner_percentage">{t('lofts.ownerPercentage')} (%) *</Label>
+          <Input 
+            id="owner_percentage" 
+            type="number" 
+            min="0" 
+            max="100" 
+            step="0.01"
+            value={formData.owner_percentage} 
+            onChange={(e) => {
+              const ownerPercentage = e.target.value
+              const companyPercentage = ownerPercentage && !isNaN(Number(ownerPercentage))
+                ? (100 - Number(ownerPercentage)).toString() 
+                : ""
+              setFormData({
+                ...formData, 
+                owner_percentage: ownerPercentage,
+                company_percentage: companyPercentage
+              })
+            }} 
+            required 
+          />
+          <p className="text-xs text-muted-foreground">
+            {t('lofts.total')}: {(Number(formData.company_percentage || 0) + Number(formData.owner_percentage || 0)).toFixed(1)}% 
+            {(Number(formData.company_percentage || 0) + Number(formData.owner_percentage || 0)) === 100 ? 
+              " ✅" : ` (${t('lofts.shouldEqual100')})`}
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">{t('lofts.loftDescription')}</Label>
+        <Textarea id="description" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} />
+      </div>
+
+      <div className="space-y-6">
+        <h3 className="text-lg font-medium">{t('lofts.utilityInformation')}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
-            <Input id="address" {...register("address")} />
-            {errors.address && <p className="text-sm text-red-500">{errors.address.message}</p>}
+            <Label htmlFor="water_customer_code">{t('lofts.waterCustomerCode')}</Label>
+            <Input id="water_customer_code" value={formData.water_customer_code} onChange={(e) => setFormData({...formData, water_customer_code: e.target.value})} />
           </div>
-
           <div className="space-y-2">
-            <Label htmlFor="zone_area_id">Zone Area</Label>
-            <Select key={loft?.zone_area_id} onValueChange={(value) => setValue("zone_area_id", value)} defaultValue={loft?.zone_area_id || ""}>
+            <Label htmlFor="water_contract_code">{t('lofts.waterContractCode')}</Label>
+            <Input id="water_contract_code" value={formData.water_contract_code} onChange={(e) => setFormData({...formData, water_contract_code: e.target.value})} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="water_meter_number">{t('lofts.waterMeterNumber')}</Label>
+            <Input id="water_meter_number" value={formData.water_meter_number} onChange={(e) => setFormData({...formData, water_meter_number: e.target.value})} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="electricity_pdl_ref">{t('lofts.electricityPdlRef')}</Label>
+            <Input id="electricity_pdl_ref" value={formData.electricity_pdl_ref} onChange={(e) => setFormData({...formData, electricity_pdl_ref: e.target.value})} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="electricity_customer_number">{t('lofts.electricityCustomerNumber')}</Label>
+            <Input id="electricity_customer_number" value={formData.electricity_customer_number} onChange={(e) => setFormData({...formData, electricity_customer_number: e.target.value})} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="electricity_meter_number">{t('lofts.electricityMeterNumber')}</Label>
+            <Input id="electricity_meter_number" value={formData.electricity_meter_number} onChange={(e) => setFormData({...formData, electricity_meter_number: e.target.value})} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="gas_pdl_ref">{t('lofts.gasPdlRef')}</Label>
+            <Input id="gas_pdl_ref" value={formData.gas_pdl_ref} onChange={(e) => setFormData({...formData, gas_pdl_ref: e.target.value})} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="gas_customer_number">{t('lofts.gasCustomerNumber')}</Label>
+            <Input id="gas_customer_number" value={formData.gas_customer_number} onChange={(e) => setFormData({...formData, gas_customer_number: e.target.value})} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="gas_meter_number">{t('lofts.gasMeterNumber')}</Label>
+            <Input id="gas_meter_number" value={formData.gas_meter_number} onChange={(e) => setFormData({...formData, gas_meter_number: e.target.value})} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone_number">{t('lofts.phoneNumber')}</Label>
+            <Input id="phone_number" value={formData.phone_number} onChange={(e) => setFormData({...formData, phone_number: e.target.value})} />
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-6">
+        <h3 className="text-lg font-medium">{t('lofts.billingAlerts')}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="frequence_paiement_eau">{t('lofts.waterBillFrequency')}</Label>
+            <Select onValueChange={(value) => setFormData({...formData, frequence_paiement_eau: value})} value={formData.frequence_paiement_eau}>
               <SelectTrigger>
-                <SelectValue placeholder="Select zone area" />
+                <SelectValue placeholder={t('lofts.selectFrequency')} />
               </SelectTrigger>
               <SelectContent>
-                {zoneAreas.map((zoneArea) => (
-                  <SelectItem key={zoneArea.id} value={zoneArea.id}>
-                    {zoneArea.name}
-                  </SelectItem>
-                ))}
+                <SelectItem value="hebdomadaire">{t('lofts.frequency.weekly')}</SelectItem>
+                <SelectItem value="mensuel">{t('lofts.frequency.monthly')}</SelectItem>
+                <SelectItem value="bimestriel">{t('lofts.frequency.bimonthly')}</SelectItem>
+                <SelectItem value="trimestriel">{t('lofts.frequency.quarterly')}</SelectItem>
+                <SelectItem value="quadrimestriel">{t('lofts.frequency.fourMonthly')}</SelectItem>
+                <SelectItem value="semestriel">{t('lofts.frequency.sixMonthly')}</SelectItem>
+                <SelectItem value="annuel">{t('lofts.frequency.yearly')}</SelectItem>
               </SelectContent>
             </Select>
-            {errors.zone_area_id && <p className="text-sm text-red-500">{errors.zone_area_id.message}</p>}
           </div>
-
           <div className="space-y-2">
-            <Label htmlFor="internet_connection_type_id">Internet Connection Type</Label>
-            <Select key={loft?.internet_connection_type_id} onValueChange={(value) => setValue("internet_connection_type_id", value)} defaultValue={loft?.internet_connection_type_id || ""}>
+            <Label htmlFor="prochaine_echeance_eau">{t('lofts.nextWaterBill')}</Label>
+            <Input id="prochaine_echeance_eau" type="date" value={formData.prochaine_echeance_eau} onChange={(e) => setFormData({...formData, prochaine_echeance_eau: e.target.value})} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="frequence_paiement_energie">{t('lofts.energyBillFrequency')}</Label>
+            <Select onValueChange={(value) => setFormData({...formData, frequence_paiement_energie: value})} value={formData.frequence_paiement_energie}>
               <SelectTrigger>
-                <SelectValue placeholder="Select internet connection type" />
+                <SelectValue placeholder={t('lofts.selectFrequency')} />
               </SelectTrigger>
               <SelectContent>
-                {internetConnectionTypes.map((ict) => (
-                  <SelectItem key={ict.id} value={ict.id}>
-                    {ict.type} ({ict.speed}) - {ict.provider}
-                  </SelectItem>
-                ))}
+                <SelectItem value="hebdomadaire">{t('lofts.frequency.weekly')}</SelectItem>
+                <SelectItem value="mensuel">{t('lofts.frequency.monthly')}</SelectItem>
+                <SelectItem value="bimestriel">{t('lofts.frequency.bimonthly')}</SelectItem>
+                <SelectItem value="trimestriel">{t('lofts.frequency.quarterly')}</SelectItem>
+                <SelectItem value="quadrimestriel">{t('lofts.frequency.fourMonthly')}</SelectItem>
+                <SelectItem value="semestriel">{t('lofts.frequency.sixMonthly')}</SelectItem>
+                <SelectItem value="annuel">{t('lofts.frequency.yearly')}</SelectItem>
               </SelectContent>
             </Select>
-            {errors.internet_connection_type_id && <p className="text-sm text-red-500">{errors.internet_connection_type_id.message}</p>}
           </div>
-
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea id="description" {...register("description")} />
-            {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
+            <Label htmlFor="prochaine_echeance_energie">{t('lofts.nextEnergyBill')}</Label>
+            <Input id="prochaine_echeance_energie" type="date" value={formData.prochaine_echeance_energie} onChange={(e) => setFormData({...formData, prochaine_echeance_energie: e.target.value})} />
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="price_per_month">Monthly Rent ($)</Label>
-              <Input
-                id="price_per_month"
-                type="number"
-                step="0.01"
-                {...register("price_per_month", { valueAsNumber: true })}
-              />
-              {errors.price_per_month && <p className="text-sm text-red-500">{errors.price_per_month.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="owner_id">Owner</Label>
-              <Select key={loft?.owner_id} onValueChange={(value) => setValue("owner_id", value)} defaultValue={loft?.owner_id}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select owner" />
-                </SelectTrigger>
-                <SelectContent>
-                  {owners.map((owner) => (
-                    <SelectItem key={owner.id} value={owner.id}>
-                      {owner.name} ({owner.ownership_type})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.owner_id && <p className="text-sm text-red-500">{errors.owner_id.message}</p>}
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="frequence_paiement_telephone">{t('lofts.phoneBillFrequency')}</Label>
+            <Select onValueChange={(value) => setFormData({...formData, frequence_paiement_telephone: value})} value={formData.frequence_paiement_telephone}>
+              <SelectTrigger>
+                <SelectValue placeholder={t('lofts.selectFrequency')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hebdomadaire">{t('lofts.frequency.weekly')}</SelectItem>
+                <SelectItem value="mensuel">{t('lofts.frequency.monthly')}</SelectItem>
+                <SelectItem value="bimestriel">{t('lofts.frequency.bimonthly')}</SelectItem>
+                <SelectItem value="trimestriel">{t('lofts.frequency.quarterly')}</SelectItem>
+                <SelectItem value="quadrimestriel">{t('lofts.frequency.fourMonthly')}</SelectItem>
+                <SelectItem value="semestriel">{t('lofts.frequency.sixMonthly')}</SelectItem>
+                <SelectItem value="annuel">{t('lofts.frequency.yearly')}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-
-          <div className="space-y-4 pt-4">
-            <h3 className="text-lg font-semibold">Water Bill Information</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="water_customer_code">Customer Code</Label>
-                <Input id="water_customer_code" {...register("water_customer_code")} />
-                {errors.water_customer_code && <p className="text-sm text-red-500">{errors.water_customer_code.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="water_contract_code">Contract Code</Label>
-                <Input id="water_contract_code" {...register("water_contract_code")} />
-                {errors.water_contract_code && <p className="text-sm text-red-500">{errors.water_contract_code.message}</p>}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="water_meter_number">Meter Number</Label>
-                <Input id="water_meter_number" {...register("water_meter_number")} />
-                {errors.water_meter_number && <p className="text-sm text-red-500">{errors.water_meter_number.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="water_correspondent">Correspondent</Label>
-                <Input id="water_correspondent" {...register("water_correspondent")} />
-                {errors.water_correspondent && <p className="text-sm text-red-500">{errors.water_correspondent.message}</p>}
-              </div>
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="prochaine_echeance_telephone">{t('lofts.nextPhoneBill')}</Label>
+            <Input id="prochaine_echeance_telephone" type="date" value={formData.prochaine_echeance_telephone} onChange={(e) => setFormData({...formData, prochaine_echeance_telephone: e.target.value})} />
           </div>
-
-          <div className="space-y-4 pt-4">
-            <h3 className="text-lg font-semibold">Electricity Bill Information</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="electricity_pdl_ref">Ref PDL</Label>
-                <Input id="electricity_pdl_ref" {...register("electricity_pdl_ref")} />
-                {errors.electricity_pdl_ref && <p className="text-sm text-red-500">{errors.electricity_pdl_ref.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="electricity_customer_number">Customer Number</Label>
-                <Input id="electricity_customer_number" {...register("electricity_customer_number")} />
-                {errors.electricity_customer_number && <p className="text-sm text-red-500">{errors.electricity_customer_number.message}</p>}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="electricity_meter_number">Meter Number</Label>
-                <Input id="electricity_meter_number" {...register("electricity_meter_number")} />
-                {errors.electricity_meter_number && <p className="text-sm text-red-500">{errors.electricity_meter_number.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="electricity_correspondent">Correspondent</Label>
-                <Input id="electricity_correspondent" {...register("electricity_correspondent")} />
-                {errors.electricity_correspondent && <p className="text-sm text-red-500">{errors.electricity_correspondent.message}</p>}
-              </div>
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="frequence_paiement_internet">{t('lofts.internetBillFrequency')}</Label>
+            <Select onValueChange={(value) => setFormData({...formData, frequence_paiement_internet: value})} value={formData.frequence_paiement_internet}>
+              <SelectTrigger>
+                <SelectValue placeholder={t('lofts.selectFrequency')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hebdomadaire">{t('lofts.frequency.weekly')}</SelectItem>
+                <SelectItem value="mensuel">{t('lofts.frequency.monthly')}</SelectItem>
+                <SelectItem value="bimestriel">{t('lofts.frequency.bimonthly')}</SelectItem>
+                <SelectItem value="trimestriel">{t('lofts.frequency.quarterly')}</SelectItem>
+                <SelectItem value="quadrimestriel">{t('lofts.frequency.fourMonthly')}</SelectItem>
+                <SelectItem value="semestriel">{t('lofts.frequency.sixMonthly')}</SelectItem>
+                <SelectItem value="annuel">{t('lofts.frequency.yearly')}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-
-          <div className="space-y-4 pt-4">
-            <h3 className="text-lg font-semibold">Gas Bill Information</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="gas_pdl_ref">Ref PDL</Label>
-                <Input id="gas_pdl_ref" {...register("gas_pdl_ref")} />
-                {errors.gas_pdl_ref && <p className="text-sm text-red-500">{errors.gas_pdl_ref.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="gas_customer_number">Customer Number</Label>
-                <Input id="gas_customer_number" {...register("gas_customer_number")} />
-                {errors.gas_customer_number && <p className="text-sm text-red-500">{errors.gas_customer_number.message}</p>}
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="gas_meter_number">Meter Number</Label>
-                <Input id="gas_meter_number" {...register("gas_meter_number")} />
-                {errors.gas_meter_number && <p className="text-sm text-red-500">{errors.gas_meter_number.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="gas_correspondent">Correspondent</Label>
-                <Input id="gas_correspondent" {...register("gas_correspondent")} />
-                {errors.gas_correspondent && <p className="text-sm text-red-500">{errors.gas_correspondent.message}</p>}
-              </div>
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="prochaine_echeance_internet">{t('lofts.nextInternetBill')}</Label>
+            <Input id="prochaine_echeance_internet" type="date" value={formData.prochaine_echeance_internet} onChange={(e) => setFormData({...formData, prochaine_echeance_internet: e.target.value})} />
           </div>
+        </div>
+      </div>
 
-          <div className="space-y-2 pt-4">
-            <Label htmlFor="phone_number">Phone Number</Label>
-            <Input id="phone_number" {...register("phone_number")} />
-            {errors.phone_number && <p className="text-sm text-red-500">{errors.phone_number.message}</p>}
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="company_percentage">Company Share (%)</Label>
-              <Input
-                id="company_percentage"
-                type="number"
-                step="0.01"
-                min="0"
-                max="100"
-                {...register("company_percentage", {
-                  valueAsNumber: true,
-                  onChange: (e) => {
-                    const value = Number.parseFloat(e.target.value) || 0
-                    setValue("owner_percentage", 100 - value)
-                  },
-                })}
-              />
-              {errors.company_percentage && <p className="text-sm text-red-500">{errors.company_percentage.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="owner_percentage">Owner Share (%)</Label>
-              <Input
-                id="owner_percentage"
-                type="number"
-                step="0.01"
-                min="0"
-                max="100"
-                {...register("owner_percentage", {
-                  valueAsNumber: true,
-                  onChange: (e) => {
-                    const value = Number.parseFloat(e.target.value) || 0
-                    setValue("company_percentage", 100 - value)
-                  },
-                })}
-              />
-              {errors.owner_percentage && <p className="text-sm text-red-500">{errors.owner_percentage.message}</p>}
-            </div>
-          </div>
-
-          <div className="flex gap-4 pt-4">
-            <Button type="submit" disabled={isLoading || isSubmitting}>
-              {(isLoading || isSubmitting) ? "Saving..." : loft ? "Update Loft" : "Create Loft"}
-            </Button>
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => window.location.reload()}
-            >
-              Reset Form
-            </Button>
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => router.push('/lofts')}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+      <div className="flex justify-end space-x-4">
+        <Button type="button" variant="outline" disabled={isSubmitting}>
+          {t('common.cancel')}
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? (loft ? t('lofts.updating') : t('lofts.creating')) : (loft ? t('lofts.updateLoft') : t('lofts.createLoft'))}
+        </Button>
+      </div>
+    </form>
+    </div>
   )
 }

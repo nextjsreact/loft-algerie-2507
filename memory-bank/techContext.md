@@ -11,5 +11,5 @@
 ## Development Environment
 
 *   **Node.js**: The runtime environment for the application.
-*   **pnpm**: The package manager for the project.
+*   **npm**: The package manager for the project.
 *   **TypeScript**: The programming language used for the project.

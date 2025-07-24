@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card" // Import Card components
 import { Category } from "@/lib/types"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+import { toast } from "@/components/ui/use-toast"
 
 const categorySchema = z.object({
   name: z.string().min(2),
@@ -52,14 +52,30 @@ export function CategoryForm({
     try {
       if (category) {
         await updateCategory(category.id, data)
-        toast.success("Category updated")
+        toast({
+          title: "✅ Success",
+          description: `Category "${data.name}" updated successfully`,
+          duration: 3000,
+        })
       } else {
         await createCategory(data)
-        toast.success("Category created")
+        toast({
+          title: "✅ Success",
+          description: `Category "${data.name}" created successfully`,
+          duration: 3000,
+        })
       }
-      router.push("/settings/categories")
+      setTimeout(() => {
+        router.push("/settings/categories")
+      }, 1000)
     } catch (error) {
-      toast.error("Something went wrong")
+      console.error('Error saving category:', error)
+      toast({
+        title: "❌ Error",
+        description: "Failed to save category - please try again",
+        variant: "destructive",
+        duration: 5000,
+      })
     }
   }
 

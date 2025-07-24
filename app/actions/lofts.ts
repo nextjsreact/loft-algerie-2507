@@ -54,8 +54,8 @@ export async function getLoft(id: string): Promise<Loft | null> {
   return loft as unknown as Loft
 }
 
-export async function updateLoft(id: string, data: Omit<Loft, "id" | "created_at" | "updated_at">) {
-  await requireRole(["admin"])
+export async function updateLoft(id: string, data: Omit<Loft, "id" | "created_at" | "updated_at">): Promise<{ success: boolean }> {
+  await requireRole(["admin", "manager"])
 
   const supabase = await createClient() // Create client here
   const { error } = await supabase
@@ -65,10 +65,10 @@ export async function updateLoft(id: string, data: Omit<Loft, "id" | "created_at
 
   if (error) {
     console.error("Error updating loft:", error)
-    throw error
+    return { success: false }
   }
 
-  redirect(`/lofts/${id}`)
+  return { success: true }
 }
 
 interface CreateLoftResult {

@@ -7,6 +7,8 @@ import { getLofts } from '@/app/actions/lofts'
 import { getPaymentMethods } from '@/app/actions/payment-methods'
 import { Transaction as TransactionFormData } from '@/lib/validations' // Corrected import
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { toast } from '@/components/ui/use-toast'
 import { Currency, PaymentMethod } from '@/lib/types'
 
 interface Category {
@@ -26,6 +28,7 @@ export default function NewTransactionPage() {
   const [lofts, setLofts] = useState<Loft[]>([])
   const [currencies, setCurrencies] = useState<Currency[]>([])
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,6 +45,12 @@ export default function NewTransactionPage() {
         setPaymentMethods(paymentMethodsData)
       } catch (error) {
         console.error("Failed to fetch data:", error)
+        toast({
+          title: "❌ Error",
+          description: "Failed to load form data - please refresh the page",
+          variant: "destructive",
+          duration: 5000,
+        })
       }
     }
     fetchData()
@@ -51,9 +60,22 @@ export default function NewTransactionPage() {
     setIsSubmitting(true)
     try {
       await createTransaction(data)
+      toast({
+        title: "✅ Success",
+        description: `Transaction "${data.description}" created successfully`,
+        duration: 3000,
+      })
+      setTimeout(() => {
+        router.push("/transactions")
+      }, 1000)
     } catch (error) {
-      console.error(error)
-      // Handle error state in the form
+      console.error('Error creating transaction:', error)
+      toast({
+        title: "❌ Error",
+        description: "Failed to create transaction - please check your data and try again",
+        variant: "destructive",
+        duration: 5000,
+      })
     } finally {
       setIsSubmitting(false)
     }

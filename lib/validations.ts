@@ -1,14 +1,29 @@
 import { z } from 'zod';
 
+// Enhanced password validation
+const passwordValidation = z.string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/^(?=.*[a-z])/, "Password must contain at least one lowercase letter")
+  .regex(/^(?=.*[A-Z])/, "Password must contain at least one uppercase letter")
+  .regex(/^(?=.*\d)/, "Password must contain at least one number");
+
 export const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
 });
 
 export const registerSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  full_name: z.string().min(1),
+  email: z.string().email("Please enter a valid email address"),
+  password: passwordValidation,
+  full_name: z.string().min(2, "Full name must be at least 2 characters").max(100, "Full name is too long"),
+});
+
+export const passwordResetSchema = z.object({
+  password: passwordValidation,
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
 });
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
@@ -37,6 +52,14 @@ export const loftSchema = z.object({
   gas_meter_number: z.string().optional(),
   gas_correspondent: z.string().optional(),
   phone_number: z.string().optional(),
+  frequence_paiement_eau: z.string().optional(),
+  prochaine_echeance_eau: z.string().optional(),
+  frequence_paiement_energie: z.string().optional(),
+  prochaine_echeance_energie: z.string().optional(),
+  frequence_paiement_telephone: z.string().optional(),
+  prochaine_echeance_telephone: z.string().optional(),
+  frequence_paiement_internet: z.string().optional(),
+  prochaine_echeance_internet: z.string().optional(),
 });
 
 export type LoftFormData = z.infer<typeof loftSchema>;
@@ -49,6 +72,11 @@ export const taskSchema = z.object({
   assigned_to: z.string().nullable().optional(), // Allow null for unassigned
   team_id: z.string().nullable().optional(),
   loft_id: z.string().nullable().optional()
+});
+
+// Schema for members who can only update task status
+export const taskStatusUpdateSchema = z.object({
+  status: z.enum(['todo', 'in_progress', 'completed']),
 });
 
 export const transactionSchema = z.object({
@@ -67,6 +95,7 @@ export const transactionSchema = z.object({
 
 export type Transaction = z.infer<typeof transactionSchema>;
 export type TaskFormData = z.infer<typeof taskSchema>;
+export type TaskStatusUpdateData = z.infer<typeof taskStatusUpdateSchema>;
 
 export const loftOwnerSchema = z.object({
   name: z.string().min(1, "Name is required"),

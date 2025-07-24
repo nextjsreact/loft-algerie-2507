@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart"
 import { Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { useTranslation } from "@/lib/i18n/context"
 
 interface MonthlyRevenueData {
   month: string;
@@ -14,23 +15,25 @@ interface RevenueChartProps {
   monthlyRevenue: MonthlyRevenueData[];
 }
 
-const chartConfig = {
-  revenue: {
-    label: "Revenue",
-    color: "hsl(var(--chart-1))",
-  },
-  expenses: {
-    label: "Expenses",
-    color: "hsl(var(--chart-2))",
-  },
-} satisfies ChartConfig
-
 export function RevenueChart({ monthlyRevenue }: RevenueChartProps) {
+  const { t } = useTranslation()
+  
+  const chartConfig = {
+    revenue: {
+      label: t('dashboard.revenue'),
+      color: "hsl(var(--chart-1))",
+    },
+    expenses: {
+      label: t('dashboard.expenses'),
+      color: "hsl(var(--chart-2))",
+    },
+  } satisfies ChartConfig
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Revenue vs Expenses</CardTitle>
-        <CardDescription>Monthly financial overview</CardDescription>
+        <CardTitle>{t('dashboard.revenueVsExpenses')}</CardTitle>
+        <CardDescription>{t('dashboard.monthlyFinancialOverview')}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[300px]">

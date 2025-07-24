@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { toast } from "@/components/ui/use-toast"
 import { loftOwnerSchema, type LoftOwnerFormData } from "@/lib/validations"
 import type { LoftOwner } from "@/lib/types"
 
@@ -52,12 +53,32 @@ export function OwnerForm({ owner, action }: OwnerFormProps) {
       const result = await action(formData)
       if (result?.error) {
         setError(result.error)
+        toast({
+          title: "❌ Error",
+          description: result.error,
+          variant: "destructive",
+          duration: 5000,
+        })
       } else {
-        router.refresh()
-        router.push("/owners")
+        const ownerName = formData.get("name") as string
+        toast({
+          title: "✅ Success",
+          description: `Owner "${ownerName}" ${owner ? 'updated' : 'created'} successfully`,
+          duration: 3000,
+        })
+        setTimeout(() => {
+          router.push("/owners")
+        }, 1000)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred")
+      const errorMessage = err instanceof Error ? err.message : "An error occurred"
+      setError(errorMessage)
+      toast({
+        title: "❌ Error",
+        description: errorMessage,
+        variant: "destructive",
+        duration: 5000,
+      })
     } finally {
       setIsLoading(false)
     }

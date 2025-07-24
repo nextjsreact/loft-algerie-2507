@@ -14,12 +14,14 @@ import { Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { register as registerUser } from "@/lib/auth"
 import { registerSchema, type RegisterFormData } from "@/lib/validations"
+import { useTranslation } from "@/lib/i18n/context"
 
 export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-/*  */  const [error, setError] = useState("")
+  const [error, setError] = useState("")
   const router = useRouter()
+  const { t } = useTranslation()
 
   const {
     register,
@@ -39,10 +41,10 @@ export function RegisterForm() {
         router.push("/dashboard")
         router.refresh()
       } else {
-        setError(result.error || "Registration failed")
+        setError(result.error || t('auth.registrationFailed'))
       }
     } catch (err) {
-      setError("An unexpected error occurred")
+      setError(t('auth.unexpectedError'))
     } finally {
       setIsLoading(false)
     }
@@ -52,8 +54,8 @@ export function RegisterForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">Create account</CardTitle>
-        <CardDescription className="text-center">Enter your information to create a new account</CardDescription>
+        <CardTitle className="text-2xl text-center">{t('auth.signUpTitle')}</CardTitle>
+        <CardDescription className="text-center">{t('auth.signUpDescription')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -64,24 +66,24 @@ export function RegisterForm() {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="full_name">Full Name</Label>
-            <Input id="full_name" placeholder="Enter your full name" {...register("full_name")} disabled={isLoading} />
+            <Label htmlFor="full_name">{t('auth.fullName')}</Label>
+            <Input id="full_name" placeholder={t('auth.enterFullName')} {...register("full_name")} disabled={isLoading} />
             {errors.full_name && <p className="text-sm text-red-500">{errors.full_name.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Enter your email" {...register("email")} disabled={isLoading} />
+            <Label htmlFor="email">{t('auth.email')}</Label>
+            <Input id="email" type="email" placeholder={t('auth.enterEmail')} {...register("email")} disabled={isLoading} />
             {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('auth.password')}</Label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Create a password"
+                placeholder={t('auth.enterPassword')}
                 {...register("password")}
                 disabled={isLoading}
               />
@@ -100,7 +102,7 @@ export function RegisterForm() {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Creating account..." : "Create Account"}
+            {isLoading ? t('auth.signingUp') : t('auth.signUp')}
           </Button>
         </form>
 
@@ -108,9 +110,9 @@ export function RegisterForm() {
 
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
+            {t('auth.haveAccount')}{" "}
             <Link href="/login" className="text-blue-600 hover:underline">
-              Sign in
+              {t('auth.signIn')}
             </Link>
           </p>
         </div>

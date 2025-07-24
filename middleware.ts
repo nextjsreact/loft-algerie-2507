@@ -7,18 +7,22 @@ export async function middleware(request: NextRequest) {
     request,
   })
 
+  // Log incoming cookies
+  console.log("Middleware: Incoming cookies:", request.cookies.getAll().map(c => c.name));
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
+        get(name: string) {
+          return request.cookies.get(name)?.value
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+        set(name: string, value: string, options: { path?: string; maxAge?: number; httpOnly?: boolean; secure?: boolean; expires?: Date; sameSite?: boolean | "lax" | "strict" | "none" }) {
+          supabaseResponse.cookies.set(name, value, options)
+        },
+        remove(name: string, options: { path?: string; maxAge?: number; httpOnly?: boolean; secure?: boolean; expires?: Date; sameSite?: boolean | "lax" | "strict" | "none" }) {
+          supabaseResponse.cookies.set(name, '', options)
         },
       },
     }
@@ -28,9 +32,37 @@ export async function middleware(request: NextRequest) {
   // IMPORTANT: Do not run any other code between createServerClient and getUser
   // or getSession. A simple mistake could make it very hard to debug issues
   // with users being randomly logged out.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+  // Manually set cookies on the response
+  if (session && session.access_token) {
+    supabaseResponse.cookies.set({
+      name: 'sb-access-token', // Or whatever your Supabase access token cookie is named
+      value: session.access_token,
+      httpOnly: true,
+      secure: true, // Use true in production
+      path: '/',
+      maxAge: session.expires_in, // Or session.expires_at - Math.floor(Date.now() / 1000)
+    });
+  }
+  if (session && session.refresh_token) {
+    supabaseResponse.cookies.set({
+      name: 'sb-refresh-token', // Or whatever your Supabase refresh token cookie is named
+      value: session.refresh_token,
+      httpOnly: true,
+      secure: true, // Use true in production
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7, // Example: 7 days
+    });
+  }
+
+  // Log cookies after session refresh attempt
+  console.log("Middleware: Supabase response cookies after refresh:", supabaseResponse.cookies.getAll().map(c => c.name));
+
+  if (sessionError || userError) {
+    console.error("Middleware session or user error:", sessionError || userError);
+  }
 
   const { pathname } = request.nextUrl
   const publicRoutes = ["/login", "/register", "/forgot-password"]
@@ -48,6 +80,28 @@ export async function middleware(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/dashboard'
     return NextResponse.redirect(redirectUrl)
+  }
+
+  // Executive route protection
+  if (pathname.startsWith('/executive')) {
+    if (!user) {
+      const redirectUrl = request.nextUrl.clone()
+      redirectUrl.pathname = '/login'
+      return NextResponse.redirect(redirectUrl)
+    }
+    
+    // Get user profile to check role
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+    
+    if (!profile || profile.role !== 'executive') {
+      const redirectUrl = request.nextUrl.clone()
+      redirectUrl.pathname = '/dashboard'
+      return NextResponse.redirect(redirectUrl)
+    }
   }
 
   // IMPORTANT: You must return the supabaseResponse object as it is.

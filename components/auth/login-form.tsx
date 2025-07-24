@@ -10,16 +10,19 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
+import { LanguageSelector } from "@/components/ui/language-selector"
 import { Eye, EyeOff } from "lucide-react"
 import Link from "next/link"
 import { login } from "@/lib/auth"
 import { loginSchema, type LoginFormData } from "@/lib/validations"
+import { useTranslation } from "@/lib/i18n/context"
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const router = useRouter()
+  const { t } = useTranslation()
 
   const {
     register,
@@ -51,9 +54,13 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex-1" />
+          <LanguageSelector />
+        </div>
+        <CardTitle className="text-2xl text-center">{t('auth.welcomeBack')}</CardTitle>
         <CardDescription className="text-center">
-          Enter your credentials to access the loft management system
+          {t('auth.signInDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -65,18 +72,24 @@ export function LoginForm() {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Enter your email" {...register("email")} disabled={isLoading} />
+            <Label htmlFor="email">{t('auth.email')}</Label>
+            <Input 
+              id="email" 
+              type="email" 
+              placeholder={t('auth.enterEmail')} 
+              {...register("email")} 
+              disabled={isLoading} 
+            />
             {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('auth.password')}</Label>
             <div className="relative">
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
+                placeholder={t('auth.enterPassword')}
                 {...register("password")}
                 disabled={isLoading}
               />
@@ -96,12 +109,12 @@ export function LoginForm() {
 
           <div className="flex items-center justify-between">
             <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
-              Forgot password?
+              {t('auth.forgotPassword')}
             </Link>
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isLoading ? t('auth.signingIn') : t('auth.signIn')}
           </Button>
         </form>
 
@@ -109,24 +122,24 @@ export function LoginForm() {
 
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            {t('auth.noAccount')}{" "}
             <Link href="/register" className="text-blue-600 hover:underline">
-              Sign up
+              {t('auth.signUp')}
             </Link>
           </p>
         </div>
 
         <div className="mt-6 p-4 bg-muted rounded-lg">
-          <p className="text-sm font-medium mb-2">Demo Accounts:</p>
+          <p className="text-sm font-medium mb-2">{t('auth.demoAccounts')}</p>
           <div className="space-y-1 text-xs text-muted-foreground">
             <p>
-              <strong>Admin:</strong> admin@loftmanager.com / password123
+              <strong>{t('auth.admin')}:</strong> admin@loftmanager.com / password123
             </p>
             <p>
-              <strong>Manager:</strong> manager@loftmanager.com / password123
+              <strong>{t('auth.manager')}:</strong> manager@loftmanager.com / password123
             </p>
             <p>
-              <strong>Member:</strong> member@loftmanager.com / password123
+              <strong>{t('auth.member')}:</strong> member@loftmanager.com / password123
             </p>
           </div>
         </div>

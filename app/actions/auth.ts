@@ -2,10 +2,53 @@ import { User, UserRole, Loft, LoftStatus } from "@/lib/types";
 import { createClient } from '@/utils/supabase/server'; // Import the new createClient
 
 export async function ensureUsersTable() {
-  // This function is no longer needed as Supabase handles the database schema
-  // through its own migration system.
-  console.warn("ensureUsersTable() is deprecated and no longer performs any database operations.");
-  return; // No action needed as Supabase handles schema.
+  console.log('ensureUsersTable function (now checks for profiles) was called');
+  const supabase = await createClient();
+
+  // Check if the 'profiles' table exists by trying to select from it
+  const { error: selectError } = await supabase.from('profiles').select('id').limit(1);
+
+  if (selectError && typeof selectError.message === 'string' && selectError.message.includes('relation "profiles" does not exist')) {
+    // If the table does not exist, create it
+    console.log('Profiles table does not exist, creating it...');
+    const createTableQuery = `
+      CREATE TABLE profiles (
+        id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+        name TEXT,
+        email TEXT UNIQUE,
+        role TEXT DEFAULT 'member',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `;
+    const { error: createError } = await supabase.rpc('execute_sql', { sql: createTableQuery });
+
+    if (createError) {
+      console.error('Error creating profiles table:', createError);
+      throw createError;
+    }
+    console.log('Profiles table created successfully.');
+    
+    const rlsQuery = `
+      ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+      CREATE POLICY "Public profiles are viewable by everyone." ON profiles FOR SELECT USING (true);
+      CREATE POLICY "Users can insert their own profile." ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
+      CREATE POLICY "Users can update their own profile." ON profiles FOR UPDATE USING (auth.uid() = id);
+    `;
+    const { error: rlsError } = await supabase.rpc('execute_sql', { sql: rlsQuery });
+    if (rlsError) {
+        console.error('Error setting up RLS for profiles table:', rlsError);
+    } else {
+        console.log('RLS policies for profiles table created successfully.');
+    }
+
+  } else if (selectError) {
+    // Handle other types of select errors
+    console.error('Error ensuring profiles table exists:', selectError);
+    throw selectError;
+  } else {
+    console.log('Profiles table already exists.');
+  }
 }
 
 export async function createUser(

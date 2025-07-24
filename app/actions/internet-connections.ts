@@ -3,17 +3,33 @@
 import { createClient } from '@/utils/supabase/server';
 import { InternetConnectionType } from '@/lib/types';
 
-export async function getInternetConnectionTypes(): Promise<InternetConnectionType[]> {
+export async function getInternetConnectionTypes(): Promise<{ data: InternetConnectionType[] | null, error: any }> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('internet_connection_types')
-    .select('*');
+    .select('*')
+    .order('created_at', { ascending: false });
 
   if (error) {
     console.error('Error fetching internet connection types:', error);
-    throw error;
+    return { data: null, error };
   }
-  return data || [];
+  return { data, error: null };
+}
+
+export async function getInternetConnectionTypeById(id: string): Promise<{ data: InternetConnectionType | null, error: any }> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('internet_connection_types')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching internet connection type by id:', error);
+    return { data: null, error };
+  }
+  return { data, error: null };
 }
 
 export async function createInternetConnectionType(

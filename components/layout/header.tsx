@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Sidebar } from "@/components/layout/sidebar"
+import { LanguageSelector } from "@/components/ui/language-selector"
 import type { User } from "@/lib/types"
 
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -20,8 +21,11 @@ export function Header({ user }: HeaderProps) {
         <Building2 className="h-8 w-8 text-white" />
         <span className="ml-2 text-xl font-semibold text-white">LoftManager</span>
       </Link>
-      <div className="flex items-center gap-4">
-        <ThemeToggle />
+      <div className="flex items-center gap-2">
+        <div className="flex items-center bg-white/20 dark:bg-gray-800 rounded-md p-1 gap-1">
+          <LanguageSelector variant="ghost" size="sm" className="text-white hover:text-white" />
+          <ThemeToggle variant="ghost" size="sm" className="text-white hover:text-white" />
+        </div>
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">

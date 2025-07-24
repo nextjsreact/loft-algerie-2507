@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Building2, ClipboardList, DollarSign, Users } from "lucide-react"
+import { useTranslation } from "@/lib/i18n/context"
 
 interface StatsCardsProps {
   stats: {
@@ -14,30 +15,32 @@ interface StatsCardsProps {
 }
 
 export function StatsCards({ stats }: StatsCardsProps) {
+  const { t } = useTranslation()
+  
   const cards = [
     {
-      title: "Total Lofts",
+      title: t('dashboard.totalLofts'),
       value: stats.totalLofts,
       icon: Building2,
-      description: `${stats.occupiedLofts} occupied`,
+      description: `${stats.occupiedLofts} ${t('dashboard.occupiedLofts').toLowerCase()}`,
     },
     {
-      title: "Active Tasks",
+      title: t('dashboard.activeTasks'),
       value: stats.activeTasks,
       icon: ClipboardList,
-      description: "In progress",
+      description: t('dashboard.inProgress'),
     },
     {
-      title: "Monthly Revenue",
+      title: t('dashboard.monthlyRevenue'),
       value: `$${stats.monthlyRevenue.toLocaleString()}`,
       icon: DollarSign,
-      description: "This month",
+      description: t('dashboard.thisMonth'),
     },
     {
-      title: "Teams",
+      title: t('dashboard.teams'),
       value: stats.totalTeams,
       icon: Users,
-      description: "Active teams",
+      description: t('dashboard.activeTeams'),
     },
   ]
 

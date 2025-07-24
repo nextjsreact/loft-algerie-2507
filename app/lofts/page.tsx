@@ -5,6 +5,7 @@ import { Plus } from "lucide-react"
 import Link from "next/link"
 import { LoftsList } from "./lofts-list"
 import { createClient } from '@/utils/supabase/server' // Import the new createClient
+import { getTranslations } from "@/lib/i18n/server"
 
 type Loft = Database['public']['Tables']['lofts']['Row']
 type LoftOwner = Database['public']['Tables']['loft_owners']['Row']
@@ -19,6 +20,7 @@ interface LoftWithRelations extends Loft {
 export default async function LoftsPage() {
   const session = await requireRole(["admin", "manager"])
   const supabase = await createClient()
+  const t = await getTranslations()
 
   try {
     const { data: loftsData, error: loftsError } = await supabase
@@ -63,14 +65,14 @@ export default async function LoftsPage() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Lofts</h1>
-            <p className="text-muted-foreground">Manage your loft properties</p>
+            <h1 className="text-3xl font-bold tracking-tight">{t('lofts.title')}</h1>
+            <p className="text-muted-foreground">{t('lofts.subtitle')}</p>
           </div>
           {(session.user.role === "admin" || session.user.role === "manager") && (
             <Button asChild>
               <Link href="/lofts/new">
                 <Plus className="mr-2 h-4 w-4" />
-                Add Loft
+                {t('lofts.addLoft')}
               </Link>
             </Button>
           )}
@@ -88,9 +90,9 @@ export default async function LoftsPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Lofts</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t('lofts.title')}</h1>
           <p className="text-muted-foreground">
-            Could not load loft data. Please try again later.
+            {t('lofts.couldNotLoadData')}
           </p>
         </div>
       </div>

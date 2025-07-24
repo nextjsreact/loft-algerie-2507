@@ -8,12 +8,21 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "db:migrate": "node scripts/migrate.cjs",
-    "db:migrate:supabase": "node scripts/supabase_migrations/run-migration.cjs"
+    "db:migrate:supabase": "node scripts/supabase_migrations/run-migration.cjs",
+    "check-bills": "tsx scripts/check-bill-notifications.ts",
+    "notifications:check": "tsx scripts/check-bill-notifications.ts",
+    "debug-bills": "tsx scripts/debug-bills.ts",
+    "test-env": "tsx scripts/test-env.ts"
+  },
+  "ts-node": {
+    "esm": true
   },
   "dependencies": {
     "@hookform/resolvers": "latest",
-    "pg": "^8.11.3",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
@@ -65,6 +74,7 @@
     "react-day-picker": "8.10.1",
     "react-dom": "^18",
     "react-hook-form": "latest",
+    "react-hot-toast": "^2.5.2",
     "react-resizable-panels": "^2.1.7",
     "recharts": "latest",
     "sonner": "^1.7.1",
@@ -74,15 +84,23 @@
     "zod": "latest"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/jest": "^29.5.8",
     "@types/node": "^22.15.32",
     "@types/nodemailer": "^6.4.17",
     "@types/pg": "^8.11.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8.5",
     "supabase": "^2.30.4",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }
 }

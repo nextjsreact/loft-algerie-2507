@@ -4,7 +4,9 @@ import { TaskForm } from '@/components/forms/task-form'
 import { getTask, updateTask } from '@/app/actions/tasks'
 import { TaskFormData } from '@/lib/validations'
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
+import { useTranslation } from '@/lib/i18n/context'
+import { toast } from '@/components/ui/use-toast'
 import type { Task, User } from '@/lib/types'
 
 interface EditTaskFormProps {
@@ -14,6 +16,8 @@ interface EditTaskFormProps {
 
 export default function EditTaskForm({ initialTask, users }: EditTaskFormProps) {
   const params = useParams()
+  const router = useRouter()
+  const { t } = useTranslation()
   const id = params.id as string
   const [task, setTask] = useState<Task | null>(initialTask)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -28,19 +32,33 @@ export default function EditTaskForm({ initialTask, users }: EditTaskFormProps) 
   }, [id, initialTask])
 
   const handleUpdateTask = async (data: TaskFormData) => {
+    console.log("handleUpdateTask called with data:", data);
     if (!id) return
     setIsSubmitting(true)
     try {
       await updateTask(id, data)
+      toast({
+        title: `✅ ${t('common.success')}`,
+        description: `${t('tasks.title')} "${data.title}" ${t('tasks.updateSuccess')}`,
+        duration: 3000,
+      })
+      setTimeout(() => {
+        router.push(`/tasks/${id}`)
+      }, 1000)
     } catch (error) {
       console.error(error)
-      // Handle error state in the form
+      toast({
+        title: `❌ ${t('common.error')}`,
+        description: t('tasks.updateError'),
+        variant: "destructive",
+        duration: 5000,
+      })
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  if (!task) return <div>Loading...</div>
+  if (!task) return <div>{t('common.loading')}</div>
 
   return <TaskForm task={task} users={users} onSubmit={handleUpdateTask} isSubmitting={isSubmitting} />
 }

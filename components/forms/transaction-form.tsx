@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import type { Currency, Transaction } from '@/lib/types'
 import { Transaction as TransactionFormData } from '@/lib/validations'
+import { useTranslation } from '@/lib/i18n/context'
 
 interface Category {
   id: string;
@@ -42,12 +43,13 @@ interface TransactionFormProps {
 
 export function TransactionForm({ transaction, categories, lofts, currencies, paymentMethods, onSubmit, isSubmitting = false }: TransactionFormProps) {
   const router = useRouter()
+  const { t } = useTranslation()
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
       ...transaction, // Spread existing transaction properties
       // Format date to YYYY-MM-DD string for HTML date input
-      date: transaction?.date ? transaction.date.split('T')[0] : '',
+      date: transaction?.date ? transaction.date.split('T')[0] : new Date().toISOString().split('T')[0],
       loft_id: transaction?.loft_id || '', // Ensure it's a string
       currency_id: transaction?.currency_id || '', // Ensure it's a string
       payment_method_id: transaction?.payment_method_id || '', // Ensure it's a string
@@ -92,14 +94,14 @@ export function TransactionForm({ transaction, categories, lofts, currencies, pa
 return (
   <Card className="max-w-2xl mx-auto">
     <CardHeader>
-      <CardTitle>{transaction ? 'Edit Transaction' : 'Add New Transaction'}</CardTitle>
-      <CardDescription>{transaction ? 'Update transaction information' : 'Create a new transaction'}</CardDescription>
+      <CardTitle>{transaction ? t('transactions.editTransaction') : t('transactions.addNewTransaction')}</CardTitle>
+      <CardDescription>{transaction ? t('transactions.updateTransactionInfo') : t('transactions.createNewTransaction')}</CardDescription>
     </CardHeader>
     <CardContent>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="amount">Amount</Label>
+            <Label htmlFor="amount">{t('transactions.amount')}</Label>
             <Input id="amount" type="number" step="0.01" {...register('amount', { valueAsNumber: true })} />
             {errors.amount && <p className="text-sm text-red-500">{errors.amount.message}</p>}
             {amount !== null && amount !== undefined && (
@@ -119,42 +121,42 @@ return (
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="date">Date</Label>
+            <Label htmlFor="date">{t('transactions.date')}</Label>
             <Input id="date" type="date" {...register('date')} />
             {errors.date && <p className="text-sm text-red-500">{errors.date.message}</p>}
           </div>
         </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t('transactions.description')}</Label>
             <Textarea id="description" {...register('description')} />
             {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="transaction_type">Type</Label>
+              <Label htmlFor="transaction_type">{t('transactions.type')}</Label>
               <Select onValueChange={(value) => setValue('transaction_type', value as any)} defaultValue={transaction?.transaction_type}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t('common.selectOption')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="income">Income</SelectItem>
-                  <SelectItem value="expense">Expense</SelectItem>
+                  <SelectItem value="income">{t('transactions.income')}</SelectItem>
+                  <SelectItem value="expense">{t('transactions.expense')}</SelectItem>
                 </SelectContent>
               </Select>
               {errors.transaction_type && <p className="text-sm text-red-500">{errors.transaction_type.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">{t('transactions.status')}</Label>
               <Select onValueChange={(value) => setValue('status', value as any)} defaultValue={transaction?.status}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder={t('common.selectOption')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
+                  <SelectItem value="pending">{t('transactions.pending')}</SelectItem>
+                  <SelectItem value="completed">{t('transactions.completed')}</SelectItem>
+                  <SelectItem value="failed">{t('transactions.failed')}</SelectItem>
                 </SelectContent>
               </Select>
               {errors.status && <p className="text-sm text-red-500">{errors.status.message}</p>}
@@ -163,10 +165,10 @@ return (
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="category">{t('transactions.category')}</Label>
               <Select onValueChange={(value) => setValue('category', value)} defaultValue={transaction?.category || ''}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder={t('common.selectOption')} />
                 </SelectTrigger>
                 <SelectContent>
                   {filteredCategories.map(category => (
@@ -177,10 +179,10 @@ return (
               {errors.category && <p className="text-sm text-red-500">{errors.category.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="loft">Loft (Optional)</Label>
+              <Label htmlFor="loft">{t('transactions.loft')} ({t('transactions.optional')})</Label>
               <Select onValueChange={(value) => setValue('loft_id', value)} defaultValue={transaction?.loft_id || ''}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select loft" />
+                  <SelectValue placeholder={t('common.selectOption')} />
                 </SelectTrigger>
                 <SelectContent>
                   {(lofts || []).map(loft => (
@@ -193,10 +195,10 @@ return (
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="currency_id">Currency (Optional)</Label>
+            <Label htmlFor="currency_id">{t('transactions.currency')} ({t('transactions.optional')})</Label>
             <Select onValueChange={(value) => setValue('currency_id', value)} defaultValue={transaction?.currency_id || ''}> {/* Ensure default is empty string */}
               <SelectTrigger>
-                <SelectValue placeholder="Select currency" />
+                <SelectValue placeholder={t('common.selectOption')} />
               </SelectTrigger>
               <SelectContent>
                 {currencies.map(currency => (
@@ -208,10 +210,10 @@ return (
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="payment_method_id">Payment Method (Optional)</Label>
+            <Label htmlFor="payment_method_id">{t('transactions.paymentMethod')} ({t('transactions.optional')})</Label>
             <Select onValueChange={(value) => setValue('payment_method_id', value)} defaultValue={transaction?.payment_method_id || ''}>
               <SelectTrigger>
-                <SelectValue placeholder="Select payment method" />
+                <SelectValue placeholder={t('common.selectOption')} />
               </SelectTrigger>
               <SelectContent>
                 {(paymentMethods || []).map(method => (
@@ -224,10 +226,10 @@ return (
 
           <div className="flex gap-4 pt-4">
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : transaction ? 'Update Transaction' : 'Create Transaction'}
+              {isSubmitting ? t('common.saving') : transaction ? t('transactions.updateTransaction') : t('transactions.createTransaction')}
             </Button>
             <Button type="button" variant="outline" onClick={() => router.push('/transactions')}>
-              Cancel
+              {t('common.cancel')}
             </Button>
           </div>
         </form>

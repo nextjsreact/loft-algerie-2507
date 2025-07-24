@@ -9,13 +9,15 @@ export async function getSetting(key: string): Promise<{ data: Setting | null; e
     .from('settings')
     .select('*')
     .eq('key', key)
-    .single();
+    .maybeSingle(); // Use maybeSingle() instead of single() to handle missing records
 
   if (error) {
     console.error(`Error fetching setting with key ${key}:`, error);
     return { data: null, error };
   }
-  return { data, error: null };
+  
+  // If no data found, return null without error (this is expected for new settings)
+  return { data: data || null, error: null };
 }
 
 export async function updateSetting(key: string, value: any): Promise<{ data: Setting | null; error: any }> {

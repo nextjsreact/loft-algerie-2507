@@ -1,4 +1,5 @@
-import { requireAuth } from "@/lib/auth"
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -6,15 +7,49 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { User, Shield, Bell, Database } from "lucide-react"
 import Link from "next/link"
+import { useTranslation } from "@/lib/i18n/context"
+import { useEffect, useState } from "react"
+import { getSession } from "@/lib/auth"
+import type { AuthSession } from "@/lib/types"
 
-export default async function SettingsPage() {
-  const session = await requireAuth()
+export default function SettingsPage() {
+  const { t } = useTranslation()
+  const [session, setSession] = useState<AuthSession | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchSession() {
+      try {
+        const sessionData = await getSession()
+        if (!sessionData || (sessionData.user.role !== 'admin' && sessionData.user.role !== 'manager')) {
+          // Redirect to unauthorized or handle access control
+          window.location.href = '/unauthorized'
+          return
+        }
+        setSession(sessionData)
+      } catch (error) {
+        console.error('Failed to fetch session:', error)
+        window.location.href = '/login'
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchSession()
+  }, [])
+
+  if (loading) {
+    return <div className="p-8">{t('common.loading')}</div>
+  }
+
+  if (!session) {
+    return null
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Manage your account and application preferences</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t('settings.title')}</h1>
+        <p className="text-muted-foreground">{t('settings.subtitle')}</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -22,28 +57,28 @@ export default async function SettingsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              Profile Information
+              {t('settings.profileInfo')}
             </CardTitle>
-            <CardDescription>Update your personal information</CardDescription>
+            <CardDescription>{t('settings.updatePersonalInfo')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name</Label>
+              <Label htmlFor="fullName">{t('settings.fullName')}</Label>
               <Input id="fullName" defaultValue={session.user.full_name || ''} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('settings.email')}</Label>
               <Input id="email" type="email" defaultValue={session.user.email || ''} />
             </div>
             <div className="space-y-2">
-              <Label>Role</Label>
+              <Label>{t('settings.role')}</Label>
               <div>
                 <Badge variant="secondary" className="capitalize">
-                  {session.user.role}
+                  {t(`auth.${session.user.role}`)}
                 </Badge>
               </div>
             </div>
-            <Button>Update Profile</Button>
+            <Button>{t('settings.updateProfile')}</Button>
           </CardContent>
         </Card>
 
@@ -51,24 +86,24 @@ export default async function SettingsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Shield className="h-5 w-5" />
-              Security
+              {t('settings.security')}
             </CardTitle>
-            <CardDescription>Manage your account security</CardDescription>
+            <CardDescription>{t('settings.manageAccountSecurity')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="currentPassword">Current Password</Label>
+              <Label htmlFor="currentPassword">{t('settings.currentPassword')}</Label>
               <Input id="currentPassword" type="password" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="newPassword">New Password</Label>
+              <Label htmlFor="newPassword">{t('settings.newPassword')}</Label>
               <Input id="newPassword" type="password" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword">{t('settings.confirmPassword')}</Label>
               <Input id="confirmPassword" type="password" />
             </div>
-            <Button>Change Password</Button>
+            <Button>{t('settings.changePassword')}</Button>
           </CardContent>
         </Card>
 
@@ -76,36 +111,36 @@ export default async function SettingsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Bell className="h-5 w-5" />
-              Notifications
+              {t('settings.notifications')}
             </CardTitle>
-            <CardDescription>Configure your notification preferences</CardDescription>
+            <CardDescription>{t('settings.configureNotifications')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">Task Assignments</p>
-                <p className="text-sm text-muted-foreground">Get notified when tasks are assigned to you</p>
+                <p className="font-medium">{t('settings.taskAssignments')}</p>
+                <p className="text-sm text-muted-foreground">{t('settings.taskAssignmentsDesc')}</p>
               </div>
               <Button variant="outline" size="sm">
-                Enable
+                {t('settings.enable')}
               </Button>
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">Due Date Reminders</p>
-                <p className="text-sm text-muted-foreground">Receive reminders for upcoming due dates</p>
+                <p className="font-medium">{t('settings.dueDateReminders')}</p>
+                <p className="text-sm text-muted-foreground">{t('settings.dueDateRemindersDesc')}</p>
               </div>
               <Button variant="outline" size="sm">
-                Enable
+                {t('settings.enable')}
               </Button>
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">Financial Reports</p>
-                <p className="text-sm text-muted-foreground">Monthly financial summary emails</p>
+                <p className="font-medium">{t('settings.financialReports')}</p>
+                <p className="text-sm text-muted-foreground">{t('settings.financialReportsDesc')}</p>
               </div>
               <Button variant="outline" size="sm">
-                Enable
+                {t('settings.enable')}
               </Button>
             </div>
           </CardContent>
@@ -115,23 +150,23 @@ export default async function SettingsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              Data & Privacy
+              {t('settings.dataPrivacy')}
             </CardTitle>
-            <CardDescription>Manage your data and privacy settings</CardDescription>
+            <CardDescription>{t('settings.manageDataPrivacy')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <p className="font-medium">Data Export</p>
-              <p className="text-sm text-muted-foreground">Download all your data in JSON format</p>
+              <p className="font-medium">{t('settings.dataExport')}</p>
+              <p className="text-sm text-muted-foreground">{t('settings.dataExportDesc')}</p>
               <Button variant="outline" size="sm">
-                Export Data
+                {t('settings.exportData')}
               </Button>
             </div>
             <div className="space-y-2">
-              <p className="font-medium">Account Deletion</p>
-              <p className="text-sm text-muted-foreground">Permanently delete your account and all data</p>
+              <p className="font-medium">{t('settings.accountDeletion')}</p>
+              <p className="text-sm text-muted-foreground">{t('settings.accountDeletionDesc')}</p>
               <Button variant="destructive" size="sm">
-                Delete Account
+                {t('settings.deleteAccount')}
               </Button>
             </div>
           </CardContent>
@@ -140,14 +175,14 @@ export default async function SettingsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              Payment Methods
+              {t('settings.paymentMethods')}
             </CardTitle>
-            <CardDescription>Manage your payment methods</CardDescription>
+            <CardDescription>{t('settings.managePaymentMethods')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button variant="outline" size="sm" asChild>
               <Link href="/settings/payment-methods">
-                Manage Payment Methods
+                {t('settings.managePaymentMethodsBtn')}
               </Link>
             </Button>
           </CardContent>

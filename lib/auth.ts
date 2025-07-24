@@ -8,45 +8,35 @@ import type { AuthSession } from "./types"
 export async function getSession(): Promise<AuthSession | null> {
   const supabase = await createClient(); // Create client here for each request
 
-  try {
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-    if (userError || !user) {
-      console.log("No user found:", userError);
-      return null;
-    }
-
-    // Directly use user_metadata for profile information
-    const full_name = user.user_metadata?.full_name || null;
-    const role = user.user_metadata?.role || 'member'; // Default role to 'member'
-
-    const { data: { session: supabaseSessionData }, error: sessionError } = await supabase.auth.getSession();
-
-    if (sessionError || !supabaseSessionData) {
-      console.log("No session data found:", sessionError);
-      return null;
-    }
-
-        const newSession = {
-            user: {
-                id: user.id,
-                email: user.email ?? null,
-                full_name: full_name,
-                role: role,
-                created_at: user.created_at,
-                updated_at: user.updated_at ?? null
-            },
-            token: supabaseSessionData.access_token
-        };
-        
-        return newSession;
-    } catch (error) {
-    console.error("Unexpected error in getSession:", error);
-    
-    // Try a fresh sign out on unexpected errors
-    await (await createClient()).auth.signOut(); // Use new client for signOut
+  if (userError || !user) {
     return null;
   }
+
+  // Directly use user_metadata for profile information
+  const full_name = user.user_metadata?.full_name || null;
+  const role = user.user_metadata?.role || 'member'; // Default role to 'member'
+
+  const { data: { session: supabaseSessionData }, error: sessionError } = await supabase.auth.getSession();
+
+  if (sessionError || !supabaseSessionData) {
+    return null;
+  }
+
+  const newSession = {
+    user: {
+      id: user.id,
+      email: user.email ?? null,
+      full_name: full_name,
+      role: role,
+      created_at: user.created_at,
+      updated_at: user.updated_at ?? null
+    },
+    token: supabaseSessionData.access_token
+  };
+  
+  return newSession;
 }
 
 export async function requireAuth(): Promise<AuthSession> {
@@ -78,9 +68,12 @@ export async function login(email: string, password: string): Promise<{ success:
   })
 
   if (error) {
+    console.error("Supabase signInWithPassword error:", error); // Log the specific error
     return { success: false, error: error.message }
   }
 
+  // If login is successful, redirect to a protected page to ensure session is set
+  redirect('/dashboard'); 
   return { success: true }
 }
 

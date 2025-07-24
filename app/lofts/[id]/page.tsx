@@ -3,10 +3,11 @@ import { createClient } from "@/utils/supabase/server"
 import { notFound } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { LoftBillManagement } from "@/components/loft/bill-management"
 import Link from "next/link"
 
 export default async function LoftDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params // Destructure id from params
+  const awaitedParams = await params;
   const session = await requireRole(["admin", "manager"])
   const supabase = await createClient()
 
@@ -18,7 +19,7 @@ export default async function LoftDetailPage({ params }: { params: { id: string 
       loft_owners (name, ownership_type)
     `
     )
-    .eq("id", id)
+    .eq("id", awaitedParams.id)
     .single()
 
   if (!loft) {
@@ -61,13 +62,18 @@ export default async function LoftDetailPage({ params }: { params: { id: string 
               <p className="font-medium">{loft.description}</p>
             </div>
           )}
-          <div className="mt-6">
+          <div className="mt-6 flex gap-4">
             <Button asChild>
-              <Link href={`/lofts/${loft.id}/link-airbnb`}>Link to Airbnb</Link>
+              <Link href={`/lofts/${awaitedParams.id}/edit`}>Edit Loft</Link>
+            </Button>
+            <Button asChild>
+              <Link href={`/lofts/${awaitedParams.id}/link-airbnb`}>Link to Airbnb</Link>
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      <LoftBillManagement loftId={awaitedParams.id} loftData={loft} />
     </div>
   )
 }

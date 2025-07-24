@@ -1,27 +1,26 @@
 import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
-import { Database } from '@/lib/types' // Assuming Database type is defined here or accessible
+import { Database } from '@/lib/types'
+import { createClient as createBrowserClient } from './client'
 
 export const createClient = async (useServiceRole?: boolean) => {
-  const cookieStore = await cookies()
+  if (typeof window !== 'undefined') {
+    return createBrowserClient();
+  }
 
-  const options: any = { // Use 'any' temporarily to simplify type handling
+  const { cookies } = await import('next/headers');
+  const cookieStore = await cookies();
+
+  const options: any = {
     cookies: {
       getAll() {
         return cookieStore.getAll()
       },
       setAll(cookiesToSet: Array<{ name: string; value: string; options: object }>) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          )
-        } catch {
-          // The `setAll` method was called from a Server Component.
-          // This can be ignored if you have middleware refreshing
-          // user sessions.
-        }
-      }
-    }
+        cookiesToSet.forEach(({ name, value, options }) =>
+          cookieStore.set(name, value, options)
+        )
+      },
+    },
   };
 
   if (useServiceRole) {

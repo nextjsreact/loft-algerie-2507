@@ -13,18 +13,12 @@ export default async function NotificationsPage() {
     redirect('/login');
   }
 
-  const handleDismiss = async (id: string) => {
-    "use server";
-    await markNotificationAsRead(id);
-    revalidatePath('/notifications');
-  };
-
   const { data: initialNotifications } = await getNotifications(session.user.id);
 
   return (
     <div className="flex flex-col gap-4 p-4">
       <h1 className="text-2xl font-bold">Notifications</h1>
-      <NotificationsList notifications={initialNotifications || []} onDismiss={handleDismiss} />
+      <NotificationsList notifications={initialNotifications || []} />
     </div>
   );
 }

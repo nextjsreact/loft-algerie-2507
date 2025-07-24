@@ -9,19 +9,23 @@ import Link from "next/link"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { DatePicker } from "../../components/ui/date-picker"
+import { useTranslation } from "@/lib/i18n/context"
 
 interface TasksListProps {
   tasks: Task[]
   users: User[]
   isAdmin: boolean
+  userRole: string
+  currentUserId?: string
 }
 
 const TASK_STATUSES: TaskStatus[] = ["todo", "in_progress", "completed"]
 
-export function TasksList({ tasks, users, isAdmin }: TasksListProps) {
+export function TasksList({ tasks, users, isAdmin, userRole, currentUserId }: TasksListProps) {
   const [statusFilter, setStatusFilter] = React.useState<string>("all")
   const [startDate, setStartDate] = React.useState<Date | undefined>()
   const [endDate, setEndDate] = React.useState<Date | undefined>()
+  const { t } = useTranslation()
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -48,27 +52,27 @@ export function TasksList({ tasks, users, isAdmin }: TasksListProps) {
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div>
-          <Label htmlFor="status-filter">Filter by Status</Label>
+          <Label htmlFor="status-filter">{t('tasks.filters.filterByStatus')}</Label>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger id="status-filter">
-              <SelectValue placeholder="All Statuses" />
+              <SelectValue placeholder={t('tasks.filters.allStatuses')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="all">{t('tasks.filters.allStatuses')}</SelectItem>
               {TASK_STATUSES.map((status) => (
                 <SelectItem key={status} value={status} className="capitalize">
-                  {status.replace("_", " ")}
+                  {t(`tasks.status.${status === 'in_progress' ? 'inProgress' : status}`)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div>
-          <Label htmlFor="start-date">Start Date</Label>
+          <Label htmlFor="start-date">{t('tasks.filters.startDate')}</Label>
           <DatePicker date={startDate} setDate={setStartDate} />
         </div>
         <div>
-          <Label htmlFor="end-date">End Date</Label>
+          <Label htmlFor="end-date">{t('tasks.filters.endDate')}</Label>
           <DatePicker date={endDate} setDate={setEndDate} />
         </div>
       </div>
@@ -82,23 +86,27 @@ export function TasksList({ tasks, users, isAdmin }: TasksListProps) {
                   <CardTitle className="text-lg">{task.title}</CardTitle>
                   {task.due_date && <CardDescription>{new Date(task.due_date).toLocaleDateString()}</CardDescription>}
                 </div>
-                <Badge className={getStatusColor(task.status)}>{task.status}</Badge>
+                <Badge className={getStatusColor(task.status)}>
+                  {t(`tasks.status.${task.status === 'in_progress' ? 'inProgress' : task.status}`)}
+                </Badge>
               </div>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mt-2">{task.description}</p>
               {task.assigned_to && (
                 <div className="mt-2 text-sm text-muted-foreground">
-                  Assigned to: {users.find(user => user.id === task.assigned_to)?.full_name || 'Unknown User'}
+                  {t('tasks.assignedTo')}: {users.find(user => user.id === task.assigned_to)?.full_name || 'Unknown User'}
                 </div>
               )}
               <div className="mt-4 flex gap-2">
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/tasks/${task.id}`}>View</Link>
+                  <Link href={`/tasks/${task.id}`}>{t('tasks.viewTask')}</Link>
                 </Button>
-                {isAdmin && (
+                {(isAdmin || (userRole === "manager") || (userRole === "member" && task.assigned_to === currentUserId)) && (
                   <Button variant="outline" size="sm" asChild>
-                    <Link href={`/tasks/${task.id}/edit`}>Edit</Link>
+                    <Link href={`/tasks/${task.id}/edit`}>
+                      {userRole === "member" ? t('tasks.updateStatus') : t('tasks.editTask')}
+                    </Link>
                   </Button>
                 )}
               </div>
@@ -107,7 +115,7 @@ export function TasksList({ tasks, users, isAdmin }: TasksListProps) {
         ))}
         {filteredTasks.length === 0 && (
           <div className="col-span-full text-center text-muted-foreground">
-            No tasks match the selected filters.
+            {t('tasks.noTasks')}
           </div>
         )}
       </div>

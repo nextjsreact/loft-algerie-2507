@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { format } from "date-fns"
 import type { Task as BaseTask } from "@/lib/types" // Import BaseTask from lib/types
+import { useTranslation } from "@/lib/i18n/context"
 
 interface DisplayTask extends BaseTask {
   assigned_user?: { full_name: string } | null;
@@ -16,6 +17,8 @@ interface RecentTasksProps {
 }
 
 export function RecentTasks({ tasks }: RecentTasksProps) {
+  const { t } = useTranslation()
+  
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
@@ -32,8 +35,8 @@ export function RecentTasks({ tasks }: RecentTasksProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Tasks</CardTitle>
-        <CardDescription>Latest task updates</CardDescription>
+        <CardTitle>{t('dashboard.recentTasks')}</CardTitle>
+        <CardDescription>{t('dashboard.latestTaskUpdates')}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -45,10 +48,14 @@ export function RecentTasks({ tasks }: RecentTasksProps) {
                   {task.loft?.name} • {task.assigned_user?.full_name}
                 </p>
                 {task.due_date && (
-                  <p className="text-xs text-muted-foreground">Due: {format(new Date(task.due_date), "MMM d, yyyy")}</p>
+                  <p className="text-xs text-muted-foreground">{t('dashboard.due')}: {format(new Date(task.due_date), "d MMM yyyy")}</p>
                 )}
               </div>
-              <Badge className={getStatusColor(task.status)}>{task.status.replace("_", " ")}</Badge>
+              <Badge className={getStatusColor(task.status)}>
+                {task.status === 'todo' ? t('dashboard.toDo') : 
+                 task.status === 'in_progress' ? t('dashboard.inProgress') : 
+                 task.status === 'completed' ? t('dashboard.completed') : task.status}
+              </Badge>
             </div>
           ))}
         </div>
