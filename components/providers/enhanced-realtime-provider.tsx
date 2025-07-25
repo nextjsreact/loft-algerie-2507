@@ -67,6 +67,17 @@ export function EnhancedRealtimeProvider({ children, userId }: EnhancedRealtimeP
     // Initial counts fetch
     refreshCounts()
 
+    // Set up polling for message counts (every 5 seconds)
+    const messagePollingInterval = setInterval(refreshCounts, 5000)
+
+    // Cleanup polling on unmount
+    return () => {
+      clearInterval(messagePollingInterval)
+    }
+  }, [refreshCounts])
+
+  useEffect(() => {
+
     // Set up real-time subscription for task notifications
     const notificationsSubscription = supabase
       .channel('user_notifications')

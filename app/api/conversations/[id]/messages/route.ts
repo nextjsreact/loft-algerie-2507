@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
-import { sendMessage, getConversationMessages } from '@/lib/services/conversations'
+import { getSimpleConversationMessages, sendSimpleMessage } from '@/lib/services/conversations-simple'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient()
@@ -16,13 +16,12 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     
-    const conversationId = params.id
+    const { id: conversationId } = await params
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '50')
-    const offset = parseInt(searchParams.get('offset') || '0')
     
-    // Get conversation messages
-    const messages = await getConversationMessages(conversationId, user.id, limit, offset)
+    // Get conversation messages using simplified service
+    const messages = await getSimpleConversationMessages(conversationId, user.id, limit)
     
     return NextResponse.json(messages)
   } catch (error) {
@@ -36,7 +35,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient()
@@ -48,7 +47,7 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     
-    const conversationId = params.id
+    const { id: conversationId } = await params
     const body = await request.json()
     const { content, message_type = 'text' } = body
     
@@ -59,12 +58,15 @@ export async function POST(
       )
     }
     
-    // Send message
-    const message = await sendMessage(user.id, {
-      conversation_id: conversationId,
-      content: content.trim(),
-      message_type
-    })
+    // Send message using simplified service
+    const message = await sendSimpleMessage(user.id, conversationId, content.trim())
+    
+    if (!message) {
+      return NextResponse.json(
+        { error: 'Failed to send message' }, 
+        { status: 500 }
+      )
+    }
     
     return NextResponse.json(message)
   } catch (error) {

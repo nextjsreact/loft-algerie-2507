@@ -25,6 +25,7 @@ export function SimpleConversationPageClient({
   const [newMessage, setNewMessage] = useState('')
   const [isSending, setIsSending] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -33,6 +34,78 @@ export function SimpleConversationPageClient({
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Fonction pour récupérer les nouveaux messages
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch(`/api/conversations/${conversationId}/messages`)
+      if (response.ok) {
+        const fetchedMessages = await response.json()
+        
+        // Vérifier s'il y a de nouveaux messages avant de mettre à jour
+        setMessages(prevMessages => {
+          // Éliminer les doublons et s'assurer que chaque message a un ID unique
+          const uniqueMessages = fetchedMessages.filter((message: any, index: number, arr: any[]) => {
+            // Garder seulement la première occurrence de chaque ID
+            return arr.findIndex((m: any) => m.id === message.id) === index
+          })
+          
+          // Comparer les longueurs et les derniers messages pour éviter les mises à jour inutiles
+          if (uniqueMessages.length !== prevMessages.length || 
+              (uniqueMessages.length > 0 && prevMessages.length > 0 && 
+               uniqueMessages[uniqueMessages.length - 1]?.id !== prevMessages[prevMessages.length - 1]?.id)) {
+            return uniqueMessages
+          }
+          return prevMessages
+        })
+      }
+    } catch (error) {
+      console.error('Error fetching messages:', error)
+    }
+  }
+
+  // Fonction pour marquer la conversation comme lue
+  const markAsRead = async () => {
+    try {
+      await fetch(`/api/conversations/${conversationId}/mark-read`, {
+        method: 'POST'
+      })
+    } catch (error) {
+      console.error('Error marking conversation as read:', error)
+    }
+  }
+
+  // Marquer comme lu quand on ouvre la conversation et démarrer le polling
+  useEffect(() => {
+    // Marquer immédiatement comme lu
+    markAsRead()
+    
+    // Démarrer le polling
+    pollingIntervalRef.current = setInterval(fetchMessages, 2000)
+
+    // Nettoyer l'intervalle quand le composant est démonté
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+      }
+    }
+  }, [conversationId])
+
+  // Marquer comme lu quand de nouveaux messages arrivent (pour les messages qu'on voit)
+  useEffect(() => {
+    if (messages.length > 0) {
+      markAsRead()
+    }
+  }, [messages.length])
+
+  // Nettoyer l'intervalle quand on change de conversation
+  useEffect(() => {
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current)
+      }
+    }
+  }, [conversationId])
 
   const sendMessage = async () => {
     if (!newMessage.trim() || isSending) return
@@ -96,9 +169,6 @@ export function SimpleConversationPageClient({
           <div>
             <h1 className="font-semibold">Conversation</h1>
             <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="text-xs">
-                Simplified Mode
-              </Badge>
               <span className="text-xs text-muted-foreground">
                 {messages.length} messages
               </span>
@@ -106,12 +176,7 @@ export function SimpleConversationPageClient({
           </div>
         </div>
         
-        <div className="text-right">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <AlertTriangle className="h-4 w-4 text-yellow-500" />
-            RLS Issues Detected
-          </div>
-        </div>
+
       </div>
 
       {/* Messages */}
@@ -122,9 +187,9 @@ export function SimpleConversationPageClient({
             <div className="text-sm">Start the conversation by sending a message below</div>
           </div>
         ) : (
-          messages.map((message) => (
+          messages.map((message, index) => (
             <div
-              key={message.id}
+              key={message.id || `message-${conversationId}-${index}-${message.created_at}-${message.sender_id}`}
               className={`flex ${message.sender_id === currentUserId ? 'justify-end' : 'justify-start'}`}
             >
               <Card className={`max-w-[70%] ${

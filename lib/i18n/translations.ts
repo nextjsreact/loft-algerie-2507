@@ -117,7 +117,18 @@ export const translations = {
       due: "Due",
       welcomeBack: "Welcome back, {name}!",
       someDataError: "Some data couldn't be loaded",
-      toDo: "To Do"
+      toDo: "To Do",
+      completed: "Completed",
+      pendingTasks: "Pending Tasks",
+      urgentTasks: "Urgent Tasks",
+      myRecentTasks: "My Recent Tasks",
+      viewAllMyTasks: "View All My Tasks",
+      quickActions: "Quick Actions",
+      viewMyTasks: "View My Tasks",
+      myProfile: "My Profile",
+      needHelp: "Need Help",
+      overdue: "Overdue",
+      todo: "To Do"
     },
 
     // Bills
@@ -453,7 +464,18 @@ export const translations = {
       due: "Échéance",
       welcomeBack: "Bon retour, {name}!",
       someDataError: "Certaines données n'ont pas pu être chargées",
-      toDo: "À Faire"
+      toDo: "À Faire",
+      completed: "Terminées",
+      pendingTasks: "Tâches en attente",
+      urgentTasks: "Tâches urgentes",
+      myRecentTasks: "Mes tâches récentes",
+      viewAllMyTasks: "Voir toutes mes tâches",
+      quickActions: "Actions rapides",
+      viewMyTasks: "Voir mes tâches",
+      myProfile: "Mon profil",
+      needHelp: "Besoin d'aide",
+      overdue: "En Retard",
+      todo: "À faire"
     },
 
     // Bills
@@ -790,7 +812,17 @@ export const translations = {
       welcomeBack: "مرحباً بعودتك، {name}!",
       someDataError: "لا يمكن تحميل بعض البيانات",
       toDo: "للقيام بها",
-      completed: "مكتملة"
+      completed: "مكتملة",
+      pendingTasks: "المهام المعلقة",
+      urgentTasks: "المهام العاجلة",
+      myRecentTasks: "مهامي الأخيرة",
+      viewAllMyTasks: "عرض جميع مهامي",
+      quickActions: "إجراءات سريعة",
+      viewMyTasks: "عرض مهامي",
+      myProfile: "ملفي الشخصي",
+      needHelp: "أحتاج مساعدة",
+      overdue: "متأخر",
+      todo: "للقيام بها"
     },
 
     // Bills

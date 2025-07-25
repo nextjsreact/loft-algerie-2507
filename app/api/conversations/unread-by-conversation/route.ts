@@ -21,13 +21,13 @@ export async function GET(request: NextRequest) {
       .eq('user_id', user.id)
 
     if (participantError || !participantData) {
-      return NextResponse.json({ count: 0 })
+      return NextResponse.json({})
     }
 
     const conversationIds = participantData.map(p => p.conversation_id)
     
     if (conversationIds.length === 0) {
-      return NextResponse.json({ count: 0 })
+      return NextResponse.json({})
     }
 
     // Get user's last_read_at timestamps for each conversation
@@ -39,12 +39,18 @@ export async function GET(request: NextRequest) {
 
     if (readError) {
       console.error('Error fetching read timestamps:', readError)
-      return NextResponse.json({ count: 0 })
+      return NextResponse.json({})
     }
 
-    // Count unread messages (messages sent after user's last_read_at)
-    let totalUnread = 0
+    // Count unread messages per conversation
+    const unreadCounts: Record<string, number> = {}
+    
+    // Initialize all conversations with 0
+    conversationIds.forEach(id => {
+      unreadCounts[id] = 0
+    })
 
+    // Count unread messages for each conversation
     for (const participant of participantsWithRead || []) {
       const lastReadAt = participant.last_read_at || new Date(0).toISOString() // If never read, use epoch
 
@@ -56,13 +62,13 @@ export async function GET(request: NextRequest) {
         .gt('created_at', lastReadAt)
 
       if (!countError && count) {
-        totalUnread += count
+        unreadCounts[participant.conversation_id] = count
       }
     }
 
-    return NextResponse.json({ count: totalUnread })
+    return NextResponse.json(unreadCounts)
   } catch (error) {
-    console.error('Error fetching unread count:', error)
-    return NextResponse.json({ count: 0 })
+    console.error('Error fetching unread counts by conversation:', error)
+    return NextResponse.json({})
   }
 }
