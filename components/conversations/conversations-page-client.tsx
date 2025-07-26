@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { MessagesSquare, AlertTriangle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useTranslation } from "@/lib/i18n/context"
 
 interface ConversationsPageClientProps {
   conversations: any[]
@@ -11,6 +12,7 @@ interface ConversationsPageClientProps {
 }
 
 export function ConversationsPageClient({ conversations, currentUserId }: ConversationsPageClientProps) {
+  const { t } = useTranslation()
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({})
 
   // Fonction pour récupérer les compteurs de messages non lus
@@ -48,10 +50,10 @@ export function ConversationsPageClient({ conversations, currentUserId }: Conver
       <div className="w-1/3 border-r flex flex-col">
         <div className="p-4 border-b flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-semibold">Messages</h2>
+            <h2 className="text-xl font-semibold">{t('conversations.messages')}</h2>
           </div>
           <Button size="sm" variant="outline" asChild>
-            <Link href="/conversations/new">New</Link>
+            <Link href="/conversations/new">{t('conversations.new')}</Link>
           </Button>
         </div>
         
@@ -59,9 +61,9 @@ export function ConversationsPageClient({ conversations, currentUserId }: Conver
           {conversations.length === 0 ? (
             <div className="p-4 text-center text-muted-foreground">
               <MessagesSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <p>No conversations yet</p>
+              <p>{t('conversations.noConversations')}</p>
               <Button size="sm" className="mt-2" asChild>
-                <Link href="/conversations/new">Start a conversation</Link>
+                <Link href="/conversations/new">{t('conversations.startConversation')}</Link>
               </Button>
             </div>
           ) : (
@@ -79,7 +81,7 @@ export function ConversationsPageClient({ conversations, currentUserId }: Conver
                           {conv.name || `Conversation ${conv.id.slice(0, 8)}`}
                         </h3>
                         <p className="text-sm text-muted-foreground">
-                          {conv.type === 'group' ? 'Group' : 'Direct'} • {conv.participant_count} participants
+                          {conv.type === 'group' ? t('conversations.group') : t('conversations.direct')} • {conv.participant_count} {conv.participant_count > 1 ? t('conversations.participants') : t('conversations.participant')}
                         </p>
                       </div>
                       
@@ -107,21 +109,21 @@ export function ConversationsPageClient({ conversations, currentUserId }: Conver
       <div className="w-2/3 flex flex-col items-center justify-center h-full bg-muted/20">
         <div className="text-center max-w-md">
           <MessagesSquare className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Select a Conversation</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('conversations.selectConversation')}</h3>
           <p className="text-muted-foreground mb-4">
-            Choose a conversation from the sidebar to start messaging, or create a new one.
+            {t('conversations.selectConversationDesc')}
           </p>
           
           {conversations.length === 0 ? (
             <div className="mt-6">
               <Button asChild>
-                <Link href="/conversations/new">Start Your First Conversation</Link>
+                <Link href="/conversations/new">{t('conversations.startConversation')}</Link>
               </Button>
             </div>
           ) : (
             <div className="mt-6">
               <Button asChild>
-                <Link href="/conversations/new">New Conversation</Link>
+                <Link href="/conversations/new">{t('conversations.newConversation')}</Link>
               </Button>
             </div>
           )}

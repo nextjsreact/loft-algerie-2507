@@ -42,7 +42,7 @@ export function EnhancedSidebar({ user, unreadCount, className }: EnhancedSideba
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, roles: ["admin", "manager", "member"] },
-    { name: "Conversations", href: "/conversations", icon: MessageSquare, roles: ["admin", "manager", "member"] },
+    { name: "Conversations", href: "/conversations", icon: MessageSquare, roles: ["admin", "manager", "member", "executive"] },
     { name: "Notifications", href: "/notifications", icon: Bell, roles: ["admin", "manager", "member"] },
     { name: "Lofts", href: "/lofts", icon: Building2, roles: ["admin", "manager"] },
     { name: "Tasks", href: "/tasks", icon: ClipboardList, roles: ["admin", "manager", "member"] },

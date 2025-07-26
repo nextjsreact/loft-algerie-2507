@@ -2,9 +2,11 @@ import { requireAuth } from "@/lib/auth"
 import { getExecutiveMetrics } from "@/lib/services/executive-dashboard"
 import { ExecutiveDashboard } from "@/components/executive/executive-dashboard"
 import { redirect } from "next/navigation"
+import { getTranslations } from "@/lib/i18n/server"
 
 export default async function ExecutivePage() {
   const session = await requireAuth()
+  const t = await getTranslations()
   
   // Vérifier que l'utilisateur a le rôle executive
   if (session.user.role !== 'executive') {
@@ -21,18 +23,18 @@ export default async function ExecutivePage() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100">
-                  Tableau de Bord Exécutif
+                  {t('executive.title')}
                 </h1>
                 <p className="text-slate-600 dark:text-slate-400 mt-2">
-                  Vue d'ensemble stratégique et métriques critiques
+                  {t('executive.subtitle')}
                 </p>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
-                  🔒 Confidentiel
+                  {t('executive.confidential')}
                 </div>
                 <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                  Executive Only
+                  {t('executive.executiveOnly')}
                 </div>
               </div>
             </div>
@@ -48,12 +50,12 @@ export default async function ExecutivePage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Accès Refusé</h1>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">{t('executive.accessDenied')}</h1>
           <p className="text-slate-600 mb-4">
-            Vous n'avez pas les permissions nécessaires pour accéder à cette page.
+            {t('executive.accessDeniedDesc')}
           </p>
           <p className="text-sm text-slate-500">
-            Niveau executive requis
+            {t('executive.executiveLevelRequired')}
           </p>
         </div>
       </div>

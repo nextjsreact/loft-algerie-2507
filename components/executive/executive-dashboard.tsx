@@ -30,6 +30,7 @@ import {
   Pie,
   Cell
 } from 'recharts'
+import { useTranslation } from "@/lib/i18n/context"
 
 interface ExecutiveDashboardProps {
   metrics: ExecutiveMetrics
@@ -38,6 +39,8 @@ interface ExecutiveDashboardProps {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 
 export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
+  const { t } = useTranslation()
+  
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('fr-DZ', {
       style: 'currency',
@@ -62,8 +65,8 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
   }
 
   const profitabilityData = [
-    { name: 'Revenus Entreprise', value: metrics.companyRevenue, color: '#0088FE' },
-    { name: 'Revenus Tiers', value: metrics.thirdPartyRevenue, color: '#00C49F' }
+    { name: t('executive.companyRevenue'), value: metrics.companyRevenue, color: '#0088FE' },
+    { name: t('executive.thirdPartyRevenue'), value: metrics.thirdPartyRevenue, color: '#00C49F' }
   ]
 
   return (
@@ -73,7 +76,7 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold flex items-center gap-2">
             <AlertTriangle className="h-6 w-6 text-red-500" />
-            Alertes Critiques
+            {t('executive.criticalAlerts')}
           </h2>
           <div className="grid gap-4">
             {metrics.criticalAlerts.slice(0, 3).map((alert) => (
@@ -98,7 +101,7 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="border-l-4 border-l-green-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Revenus Totaux</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('executive.totalRevenue')}</CardTitle>
             <DollarSign className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -111,14 +114,14 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
               ) : (
                 <TrendingDown className="h-3 w-3 text-red-500 mr-1" />
               )}
-              {formatPercentage(Math.abs(metrics.revenueGrowth))} vs mois dernier
+              {formatPercentage(Math.abs(metrics.revenueGrowth))} {t('executive.vsLastMonth')}
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-blue-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Profit Net</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('executive.netProfit')}</CardTitle>
             <Target className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
@@ -126,14 +129,14 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
               {formatCurrency(metrics.netProfit)}
             </div>
             <div className="text-xs text-muted-foreground">
-              Marge: {formatPercentage(metrics.profitMargin)}
+              {t('executive.margin')}: {formatPercentage(metrics.profitMargin)}
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-purple-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Taux d'Occupation</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('executive.occupancyRate')}</CardTitle>
             <Building className="h-4 w-4 text-purple-600" />
           </CardHeader>
           <CardContent>
@@ -146,14 +149,14 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
               ) : (
                 <TrendingDown className="h-3 w-3 text-red-500 mr-1" />
               )}
-              {formatPercentage(Math.abs(metrics.occupancyTrend))} tendance
+              {formatPercentage(Math.abs(metrics.occupancyTrend))} {t('executive.trend')}
             </div>
           </CardContent>
         </Card>
 
         <Card className="border-l-4 border-l-orange-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Cash Flow</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('executive.cashFlow')}</CardTitle>
             <BarChart3 className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
@@ -161,7 +164,7 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
               {formatCurrency(metrics.cashFlow)}
             </div>
             <div className="text-xs text-muted-foreground">
-              Flux de trésorerie mensuel
+              {t('executive.monthlyCashFlow')}
             </div>
           </CardContent>
         </Card>
@@ -172,9 +175,9 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
         {/* Tendances Mensuelles */}
         <Card>
           <CardHeader>
-            <CardTitle>Tendances Financières (12 mois)</CardTitle>
+            <CardTitle>{t('executive.financialTrends')}</CardTitle>
             <CardDescription>
-              Évolution des revenus, dépenses et profits
+              {t('executive.financialTrendsDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -189,21 +192,21 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
                   dataKey="revenue" 
                   stroke="#0088FE" 
                   strokeWidth={2}
-                  name="Revenus"
+                  name={t('executive.revenue')}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="expenses" 
                   stroke="#FF8042" 
                   strokeWidth={2}
-                  name="Dépenses"
+                  name={t('executive.expenses')}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="profit" 
                   stroke="#00C49F" 
                   strokeWidth={2}
-                  name="Profit"
+                  name={t('executive.profit')}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -213,9 +216,9 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
         {/* Répartition des Revenus */}
         <Card>
           <CardHeader>
-            <CardTitle>Répartition des Revenus</CardTitle>
+            <CardTitle>{t('executive.revenueDistribution')}</CardTitle>
             <CardDescription>
-              Part entreprise vs propriétaires tiers
+              {t('executive.revenueDistributionDesc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -244,9 +247,9 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
       {/* Comparaison Année sur Année */}
       <Card>
         <CardHeader>
-          <CardTitle>Performance Année sur Année</CardTitle>
+          <CardTitle>{t('executive.yearOverYearPerformance')}</CardTitle>
           <CardDescription>
-            Comparaison avec l'année précédente
+            {t('executive.yearOverYearDesc')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -255,7 +258,7 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
               <div className="text-2xl font-bold text-green-600">
                 {formatCurrency(metrics.yearOverYearComparison.currentYear.revenue)}
               </div>
-              <div className="text-sm text-muted-foreground">Revenus {new Date().getFullYear()}</div>
+              <div className="text-sm text-muted-foreground">{t('executive.revenue')} {new Date().getFullYear()}</div>
               <div className="flex items-center justify-center mt-2">
                 {metrics.yearOverYearComparison.growth.revenue >= 0 ? (
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
@@ -272,7 +275,7 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
               <div className="text-2xl font-bold text-blue-600">
                 {formatCurrency(metrics.yearOverYearComparison.currentYear.profit)}
               </div>
-              <div className="text-sm text-muted-foreground">Profit {new Date().getFullYear()}</div>
+              <div className="text-sm text-muted-foreground">{t('executive.profit')} {new Date().getFullYear()}</div>
               <div className="flex items-center justify-center mt-2">
                 {metrics.yearOverYearComparison.growth.profit >= 0 ? (
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
@@ -289,9 +292,9 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
               <div className="text-2xl font-bold text-purple-600">
                 {formatPercentage(metrics.companyProfitShare)}
               </div>
-              <div className="text-sm text-muted-foreground">Part Entreprise</div>
+              <div className="text-sm text-muted-foreground">{t('executive.companyShare')}</div>
               <div className="text-xs text-muted-foreground mt-2">
-                Sur total revenus
+                {t('executive.onTotalRevenue')}
               </div>
             </div>
           </div>
@@ -302,19 +305,19 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Portefeuille Immobilier</CardTitle>
+            <CardTitle className="text-lg">{t('executive.realEstatePortfolio')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex justify-between">
-              <span>Total Lofts:</span>
+              <span>{t('executive.totalLofts')}:</span>
               <span className="font-semibold">{metrics.totalLofts}</span>
             </div>
             <div className="flex justify-between">
-              <span>Prix Moyen:</span>
+              <span>{t('executive.averagePrice')}:</span>
               <span className="font-semibold">{formatCurrency(metrics.averageRentPrice)}</span>
             </div>
             <div className="flex justify-between">
-              <span>Coûts Maintenance:</span>
+              <span>{t('executive.maintenanceCosts')}:</span>
               <span className="font-semibold text-red-600">{formatCurrency(metrics.maintenanceCosts)}</span>
             </div>
           </CardContent>
@@ -322,11 +325,11 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Croissance</CardTitle>
+            <CardTitle className="text-lg">{t('executive.growth')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex justify-between items-center">
-              <span>Revenus:</span>
+              <span>{t('executive.revenue')}:</span>
               <div className="flex items-center">
                 {metrics.revenueGrowth >= 0 ? (
                   <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
@@ -339,7 +342,7 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
               </div>
             </div>
             <div className="flex justify-between items-center">
-              <span>Dépenses:</span>
+              <span>{t('executive.expenses')}:</span>
               <div className="flex items-center">
                 {metrics.expenseGrowth >= 0 ? (
                   <TrendingUp className="h-4 w-4 text-red-500 mr-1" />
@@ -356,20 +359,20 @@ export function ExecutiveDashboard({ metrics }: ExecutiveDashboardProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Statut Système</CardTitle>
+            <CardTitle className="text-lg">{t('executive.systemStatus')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
-              <span>Alertes Actives:</span>
+              <span>{t('executive.activeAlerts')}:</span>
               <Badge variant={metrics.criticalAlerts.length > 0 ? "destructive" : "secondary"}>
                 {metrics.criticalAlerts.length}
               </Badge>
             </div>
             <div className="flex items-center justify-between">
-              <span>Sécurité:</span>
+              <span>{t('executive.security')}:</span>
               <div className="flex items-center">
                 <Shield className="h-4 w-4 text-green-500 mr-1" />
-                <span className="text-green-600">Sécurisé</span>
+                <span className="text-green-600">{t('executive.secured')}</span>
               </div>
             </div>
           </CardContent>

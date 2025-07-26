@@ -9,6 +9,7 @@ import { Send, ArrowLeft, AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { SimpleMessage } from '@/lib/services/conversations-simple'
+import { useTranslation } from '@/lib/i18n/context'
 
 interface SimpleConversationPageClientProps {
   conversationId: string
@@ -21,6 +22,7 @@ export function SimpleConversationPageClient({
   initialMessages, 
   currentUserId 
 }: SimpleConversationPageClientProps) {
+  const { t } = useTranslation()
   const [messages, setMessages] = useState<SimpleMessage[]>(initialMessages)
   const [newMessage, setNewMessage] = useState('')
   const [isSending, setIsSending] = useState(false)
@@ -167,10 +169,10 @@ export function SimpleConversationPageClient({
             </Link>
           </Button>
           <div>
-            <h1 className="font-semibold">Conversation</h1>
+            <h1 className="font-semibold">{t('conversations.conversation')}</h1>
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">
-                {messages.length} messages
+                {messages.length} {t('conversations.messages')}
               </span>
             </div>
           </div>
@@ -183,8 +185,8 @@ export function SimpleConversationPageClient({
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
           <div className="text-center text-muted-foreground py-8">
-            <div className="text-lg mb-2">No messages yet</div>
-            <div className="text-sm">Start the conversation by sending a message below</div>
+            <div className="text-lg mb-2">{t('conversations.noMessages')}</div>
+            <div className="text-sm">{t('conversations.startConversationDesc')}</div>
           </div>
         ) : (
           messages.map((message, index) => (
@@ -226,7 +228,7 @@ export function SimpleConversationPageClient({
       <div className="border-t p-4 bg-background">
         <div className="flex gap-2">
           <Input
-            placeholder="Type your message..."
+            placeholder={t('conversations.typeMessage')}
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
@@ -242,7 +244,7 @@ export function SimpleConversationPageClient({
           </Button>
         </div>
         <div className="text-xs text-muted-foreground mt-2 text-center">
-          Press Enter to send • Shift+Enter for new line
+          {t('conversations.sendInstructions')}
         </div>
       </div>
     </div>

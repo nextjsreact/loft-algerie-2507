@@ -34,7 +34,7 @@ export function Sidebar({ user, unreadCount, className }: SidebarProps) {
   const navigation = [
     { name: "🎯 Executive", href: "/executive", icon: LayoutDashboard, roles: ["executive"], className: "bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold" },
     { name: t('nav.dashboard'), href: "/dashboard", icon: LayoutDashboard, roles: ["admin", "manager", "member"] },
-    { name: t('nav.conversations'), href: "/conversations", icon: MessageSquare, roles: ["admin", "manager", "member"] },
+    { name: t('nav.conversations'), href: "/conversations", icon: MessageSquare, roles: ["admin", "manager", "member", "executive"] },
     { name: t('nav.notifications'), href: "/notifications", icon: Bell, roles: ["admin", "manager", "member"] },
     { name: t('nav.lofts'), href: "/lofts", icon: Building2, roles: ["admin", "manager"] },
     { name: t('nav.tasks'), href: "/tasks", icon: ClipboardList, roles: ["admin", "manager", "member"] },
