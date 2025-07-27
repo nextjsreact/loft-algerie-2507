@@ -74,13 +74,13 @@ export function TaskForm({ task, users, onSubmit, isSubmitting = false }: TaskFo
               <div className="space-y-2">
                 <Label htmlFor="title">{t('tasks.taskTitle')}</Label>
                 <Input id="title" {...register('title')} />
-                {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
+                {'title' in errors && errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="description">{t('tasks.taskDescription')}</Label>
                 <Textarea id="description" {...register('description')} />
-                {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
+                {'description' in errors && errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
               </div>
             </>
           )}
@@ -122,7 +122,7 @@ export function TaskForm({ task, users, onSubmit, isSubmitting = false }: TaskFo
               <div className="space-y-2">
                 <Label htmlFor="due_date">{t('tasks.taskDueDate')}</Label>
                 <Input id="due_date" type="date" {...register('due_date')} />
-                {errors.due_date && <p className="text-sm text-red-500">{errors.due_date.message}</p>}
+                {'due_date' in errors && errors.due_date && <p className="text-sm text-red-500">{errors.due_date.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -140,7 +140,7 @@ export function TaskForm({ task, users, onSubmit, isSubmitting = false }: TaskFo
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.assigned_to && <p className="text-sm text-red-500">{errors.assigned_to.message}</p>}
+                {'assigned_to' in errors && errors.assigned_to && <p className="text-sm text-red-500">{errors.assigned_to.message}</p>}
               </div>
             </>
           )}

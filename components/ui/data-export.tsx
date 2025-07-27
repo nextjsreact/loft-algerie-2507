@@ -222,7 +222,13 @@ export function DataExport({ onExport, availableTypes = ['lofts', 'transactions'
                 <Label>Date range (optional)</Label>
                 <DatePickerWithRange
                   value={config.dateRange}
-                  onChange={(dateRange) => setConfig({ ...config, dateRange })}
+                  onChange={(dateRange) => setConfig({ 
+                    ...config, 
+                    dateRange: dateRange?.from && dateRange?.to ? {
+                      from: dateRange.from,
+                      to: dateRange.to
+                    } : undefined
+                  })}
                 />
               </div>
             )}

@@ -26,7 +26,7 @@ const formSchema = z.object({
   speed: z.string().nullable().optional(),
   provider: z.string().nullable().optional(),
   status: z.string().nullable().optional(),
-  cost: z.coerce.number().nullable().optional(),
+  cost: z.number().nullable().optional(),
   created_at: z.string().optional(),
 });
 

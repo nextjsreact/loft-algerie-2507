@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { toast } from "@/components/ui/use-toast"
-import type { Team } from "@/lib/database"
+import type { Team } from "@/lib/types"
 
 interface TeamFormProps {
   team?: Team
@@ -40,7 +40,7 @@ export function TeamForm({ team, action }: TeamFormProps) {
           duration: 3000,
         })
         setTimeout(() => {
-          router.push(`/teams/${result.team.id}`)
+          router.push(`/teams/${result.team!.id}`)
         }, 1000)
       } else {
         const teamName = formData.get("name") as string

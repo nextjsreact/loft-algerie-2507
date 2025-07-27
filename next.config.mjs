@@ -3,25 +3,24 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    serverComponentsExternalPackages: ['pg'],
+  serverExternalPackages: ['pg'],
+
+  // Configuration pour les variables d'environnement
+  env: {
+    NEXT_PUBLIC_HAS_DB: 'true'
   },
+  // Configuration pour Vercel
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
+  }
 }
 
-import pkg from '@next/env'
-const { loadEnvConfig } = pkg
-
-// Load env variables from .env file
-const projectDir = process.cwd()
-loadEnvConfig(projectDir)
-
-// Verify DATABASE_URL is set
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL is not set in environment variables')
+// Log pour le développement seulement
+if (process.env.NODE_ENV === 'development') {
+  console.log('Development mode - Next.js configuration loaded')
 }
-
-// Expose minimal client-side database info
-process.env.NEXT_PUBLIC_HAS_DB = 'true'
-console.log('Environment variables loaded - Database connection configured')
 
 export default nextConfig

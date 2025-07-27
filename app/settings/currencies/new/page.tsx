@@ -6,11 +6,12 @@ import { Currency } from "@/lib/types"
 export default async function NewCurrencyPage({
   searchParams,
 }: {
-  searchParams?: { id?: string }
+  searchParams?: Promise<{ id?: string }>
 }) {
   let currency: Currency | undefined
 
-  const id = searchParams?.id
+  const resolvedSearchParams = searchParams ? await searchParams : undefined
+  const id = resolvedSearchParams?.id
 
   if (id) {
     const currencies = await getCurrencies()

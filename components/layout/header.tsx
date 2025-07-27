@@ -33,7 +33,7 @@ export function Header({ user }: HeaderProps) {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-64 bg-gray-900 p-0">
-            <Sidebar user={user} />
+            <Sidebar user={user} unreadCount={0} />
           </SheetContent>
         </Sheet>
       </div>

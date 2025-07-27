@@ -2,7 +2,7 @@
 
 import { TaskForm } from '@/components/forms/task-form'
 import { getTask, updateTask } from '@/app/actions/tasks'
-import { TaskFormData } from '@/lib/validations'
+import { TaskFormData, TaskStatusUpdateData } from '@/lib/validations'
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useTranslation } from '@/lib/i18n/context'
@@ -31,7 +31,7 @@ export default function EditTaskForm({ initialTask, users }: EditTaskFormProps) 
     }
   }, [id, initialTask])
 
-  const handleUpdateTask = async (data: TaskFormData) => {
+  const handleUpdateTask = async (data: TaskFormData | TaskStatusUpdateData) => {
     console.log("handleUpdateTask called with data:", data);
     if (!id) return
     setIsSubmitting(true)
@@ -39,7 +39,7 @@ export default function EditTaskForm({ initialTask, users }: EditTaskFormProps) 
       await updateTask(id, data)
       toast({
         title: `✅ ${t('common.success')}`,
-        description: `${t('tasks.title')} "${data.title}" ${t('tasks.updateSuccess')}`,
+        description: `${t('tasks.title')} "${'title' in data ? data.title : task?.title}" ${t('tasks.updateSuccess')}`,
         duration: 3000,
       })
       setTimeout(() => {

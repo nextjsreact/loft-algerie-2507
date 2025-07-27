@@ -61,8 +61,8 @@ async function debugBills() {
       
       const utilities = ['eau', 'energie', 'telephone', 'internet']
       utilities.forEach(utility => {
-        const frequency = loft[`frequence_paiement_${utility}`]
-        const dueDate = loft[`prochaine_echeance_${utility}`]
+        const frequency = (loft as any)[`frequence_paiement_${utility}`]
+        const dueDate = (loft as any)[`prochaine_echeance_${utility}`]
         
         if (frequency || dueDate) {
           console.log(`${utility.toUpperCase()}:`)
@@ -91,7 +91,7 @@ async function debugBills() {
       console.error('❌ Error with get_upcoming_bills:', upcomingError)
     } else {
       console.log(`✅ Found ${upcomingBills?.length || 0} upcoming bills`)
-      upcomingBills?.forEach((bill, index) => {
+      upcomingBills?.forEach((bill: any, index: number) => {
         console.log(`  ${index + 1}. ${bill.loft_name} - ${bill.utility_type} - Due: ${bill.due_date} (${bill.days_until_due} days)`)
       })
     }
@@ -105,7 +105,7 @@ async function debugBills() {
       console.error('❌ Error with get_overdue_bills:', overdueError)
     } else {
       console.log(`✅ Found ${overdueBills?.length || 0} overdue bills`)
-      overdueBills?.forEach((bill, index) => {
+      overdueBills?.forEach((bill: any, index: number) => {
         console.log(`  ${index + 1}. ${bill.loft_name} - ${bill.utility_type} - Due: ${bill.due_date} (${bill.days_overdue} days overdue)`)
       })
     }

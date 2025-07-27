@@ -1,14 +1,22 @@
-import { Conversation } from './types';
+import { Conversation } from './services/conversations';
 
 export const conversations: Conversation[] = [
   {
     id: '1',
     name: 'John Doe',
-    latestMessage: 'Hey, how are you?',
+    type: 'direct',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    participants: [],
+    unread_count: 0
   },
   {
     id: '2',
     name: 'Jane Smith',
-    latestMessage: 'Are you available for a call?',
+    type: 'direct',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    participants: [],
+    unread_count: 0
   },
 ];

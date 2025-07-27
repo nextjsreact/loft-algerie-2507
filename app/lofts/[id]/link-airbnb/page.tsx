@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { linkLoftToAirbnb } from "@/app/actions/lofts"
 
-export default async function LinkAirbnbPage({ params }: { params: { id: string } }) {
-  const { id } = params
+export default async function LinkAirbnbPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   await requireRole(["admin"])
   const supabase = await createClient()
 

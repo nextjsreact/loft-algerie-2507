@@ -4,22 +4,18 @@ import { SimpleConversationPageClient } from "@/components/conversations/simple-
 import { MessagesSquare, AlertTriangle } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { PageProps } from "@/lib/types";
 
-interface ConversationPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default async function ConversationPage({ params }: ConversationPageProps) {
+export default async function ConversationPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireAuth()
+  const { id } = await params
   
   try {
-    const messages = await getSimpleConversationMessages(params.id, session.user.id)
+    const messages = await getSimpleConversationMessages(id, session.user.id)
 
     return (
       <SimpleConversationPageClient
-        conversationId={params.id}
+        conversationId={id}
         initialMessages={messages}
         currentUserId={session.user.id}
       />

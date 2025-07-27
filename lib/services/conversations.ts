@@ -23,6 +23,7 @@ export interface ConversationParticipant {
     id: string
     full_name: string
     email: string
+    avatar_url?: string
   }
 }
 
@@ -39,6 +40,7 @@ export interface Message {
     id: string
     full_name: string
     email: string
+    avatar_url?: string
   }
   attachments?: MessageAttachment[]
 }
@@ -163,7 +165,7 @@ export async function getUserConversations(userId: string): Promise<Conversation
           .from('messages')
           .select('id', { count: 'exact', head: true })
           .eq('conversation_id', conv.id)
-          .gt('created_at', item.last_read_at || '1970-01-01')
+          .gt('created_at', (item as any).last_read_at || '1970-01-01')
           .neq('sender_id', userId)
 
         conversations.push({
@@ -173,7 +175,10 @@ export async function getUserConversations(userId: string): Promise<Conversation
           created_at: conv.created_at,
           updated_at: conv.updated_at,
           last_message: lastMessage,
-          participants: participantsData || [],
+          participants: (participantsData || []).map((p: any) => ({
+            ...p,
+            user: Array.isArray(p.user) ? p.user[0] : p.user
+          })) as any,
           unread_count: unreadCount || 0
         })
       }
@@ -243,7 +248,7 @@ export async function getConversationMessages(
         throw error
       }
 
-      const messages: Message[] = (data || []).map(msg => ({
+      const messages: Message[] = (data || []).map((msg: any) => ({
         id: msg.id,
         conversation_id: msg.conversation_id,
         sender_id: msg.sender_id,
@@ -252,8 +257,8 @@ export async function getConversationMessages(
         created_at: msg.created_at,
         updated_at: msg.updated_at,
         edited: msg.edited,
-        sender: msg.sender,
-        attachments: msg.attachments || []
+        sender: Array.isArray(msg.sender) ? msg.sender[0] : msg.sender,
+        attachments: (msg.attachments || []).map((att: any) => Array.isArray(att) ? att[0] : att)
       })).reverse() // Reverse to show oldest first
 
       // Update last read timestamp
@@ -428,7 +433,11 @@ export async function sendMessage(
         .eq('id', data.conversation_id)
 
       logger.info('Message sent', { messageId: message.id, senderId })
-      return message as Message
+      const fixedMessage = {
+        ...message,
+        sender: Array.isArray((message as any).sender) ? (message as any).sender[0] : (message as any).sender
+      }
+      return fixedMessage as Message
     } catch (error) {
       logger.error('Failed to send message', error, { senderId, conversationId: data.conversation_id })
       throw error
@@ -484,7 +493,14 @@ export async function getConversationById(
       throw error
     }
 
-    return conversation as Conversation
+    const fixedConversation = {
+      ...conversation,
+      participants: ((conversation as any).participants || []).map((p: any) => ({
+        ...p,
+        user: Array.isArray(p.user) ? p.user[0] : p.user
+      }))
+    }
+    return fixedConversation as Conversation
   } catch (error) {
     logger.error('Failed to get conversation by ID', error, { conversationId, userId })
     throw error
@@ -518,7 +534,7 @@ async function validateConversationParticipants(
     .select('team_id')
     .eq('user_id', creatorId)
 
-  const teamIds = creatorTeams?.map(tm => tm.team_id) || []
+  const teamIds = creatorTeams?.map((tm: any) => tm.team_id) || []
 
   // Get allowed user IDs (team members + admins)
   const allowedUserIds: string[] = []
@@ -530,7 +546,7 @@ async function validateConversationParticipants(
     .eq('role', 'admin')
 
   if (admins) {
-    allowedUserIds.push(...admins.map(a => a.id))
+    allowedUserIds.push(...admins.map((a: any) => a.id))
   }
 
   // Get team members from creator's teams
@@ -541,12 +557,12 @@ async function validateConversationParticipants(
       .in('team_id', teamIds)
 
     if (teamMembers) {
-      allowedUserIds.push(...teamMembers.map(tm => tm.user_id))
+      allowedUserIds.push(...teamMembers.map((tm: any) => tm.user_id))
     }
   }
 
   // Check if all participants are allowed
-  const uniqueAllowedIds = [...new Set(allowedUserIds)]
+  const uniqueAllowedIds = Array.from(new Set(allowedUserIds))
   const invalidParticipants = participantIds.filter(id => !uniqueAllowedIds.includes(id))
 
   if (invalidParticipants.length > 0) {
@@ -626,12 +642,12 @@ export async function searchUsers(query: string, currentUserId: string): Promise
         .in('team_id', teamIds)
 
       if (!teamMembersError && teamMembers) {
-        allowedUserIds.push(...teamMembers.map(tm => tm.user_id))
+        allowedUserIds.push(...teamMembers.map((tm: any) => tm.user_id))
       }
     }
 
     // Remove duplicates and current user
-    const uniqueAllowedIds = [...new Set(allowedUserIds)].filter(id => id !== currentUserId)
+    const uniqueAllowedIds = Array.from(new Set(allowedUserIds)).filter(id => id !== currentUserId)
 
     if (uniqueAllowedIds.length === 0) {
       // User has no teams and isn't admin, can only message owners

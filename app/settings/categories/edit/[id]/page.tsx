@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { CategoryForm } from "./category-form"
 import { Category } from "@/lib/types"
 
-export default async function EditCategoryPage({ params }: { params: { id: string } }) {
+export default async function EditCategoryPage({ params }: { params: Promise<{ id: string }> }) {
   // Await params to ensure it's resolved before accessing properties
   const resolvedParams = await params;
   const category: Category | null = await getCategory(resolvedParams.id)

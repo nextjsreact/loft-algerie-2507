@@ -242,7 +242,7 @@ export function TransactionsList({ transactions, categories, lofts, currencies, 
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
-                  <CardTitle className="text-lg">{translateDescription(transaction.description)}</CardTitle>
+                  <CardTitle className="text-lg">{translateDescription(transaction.description || '')}</CardTitle>
                   <CardDescription>{formatDate(transaction.date)}</CardDescription>
                 </div>
                 <Badge className={getStatusColor(transaction.status)}>{translateStatus(transaction.status)}</Badge>

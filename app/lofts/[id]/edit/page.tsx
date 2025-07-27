@@ -6,7 +6,7 @@ import { notFound } from "next/navigation"
 import { EditLoftFormWrapper } from "./edit-loft-form-wrapper"
 import { EditLoftPageClient } from "./edit-loft-page-client"
 
-export default async function EditLoftPage({ params }: { params: { id: string } }) {
+export default async function EditLoftPage({ params }: { params: Promise<{ id: string }> }) {
   const awaitedParams = await params;
   const supabase = await createClient()
 

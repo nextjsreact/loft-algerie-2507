@@ -93,11 +93,11 @@ export async function getExecutiveMetrics(userId: string): Promise<ExecutiveMetr
     .select('*')
     .gte('date', new Date(new Date().getFullYear(), 0, 1).toISOString())
 
-  const revenue = transactions?.filter(t => t.transaction_type === 'income')
-    .reduce((sum, t) => sum + Number(t.amount), 0) || 0
+  const revenue = transactions?.filter((t: any) => t.transaction_type === 'income')
+    .reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
     
-  const expenses = transactions?.filter(t => t.transaction_type === 'expense')
-    .reduce((sum, t) => sum + Number(t.amount), 0) || 0
+  const expenses = transactions?.filter((t: any) => t.transaction_type === 'expense')
+    .reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
 
   // Calculer les métriques des lofts
   const { data: lofts } = await supabase
@@ -144,8 +144,8 @@ export async function getExecutiveMetrics(userId: string): Promise<ExecutiveMetr
     totalLofts,
     occupancyRate,
     averageRentPrice: totalLofts > 0 ? lofts!.reduce((sum, l) => sum + Number(l.price_per_month), 0) / totalLofts : 0,
-    maintenanceCosts: transactions?.filter(t => t.category === 'maintenance')
-      .reduce((sum, t) => sum + Number(t.amount), 0) || 0,
+    maintenanceCosts: transactions?.filter((t: any) => t.category === 'maintenance')
+      .reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0,
     
     revenueGrowth: await calculateGrowthRate(supabase, 'income'),
     expenseGrowth: await calculateGrowthRate(supabase, 'expense'),
@@ -186,10 +186,10 @@ async function calculateMonthlyTrends(supabase: any): Promise<MonthlyTrend[]> {
       .gte('date', date.toISOString())
       .lt('date', nextDate.toISOString())
     
-    const revenue = monthTransactions?.filter(t => t.transaction_type === 'income')
-      .reduce((sum, t) => sum + Number(t.amount), 0) || 0
-    const expenses = monthTransactions?.filter(t => t.transaction_type === 'expense')
-      .reduce((sum, t) => sum + Number(t.amount), 0) || 0
+    const revenue = monthTransactions?.filter((t: any) => t.transaction_type === 'income')
+      .reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
+    const expenses = monthTransactions?.filter((t: any) => t.transaction_type === 'expense')
+      .reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
     
     // Calculer le taux d'occupation pour ce mois (approximation)
     const { data: lofts } = await supabase
@@ -197,7 +197,7 @@ async function calculateMonthlyTrends(supabase: any): Promise<MonthlyTrend[]> {
       .select('status')
     
     const occupancyRate = lofts ? 
-      (lofts.filter(l => l.status === 'occupied').length / lofts.length) * 100 : 0
+      (lofts.filter((l: any) => l.status === 'occupied').length / lofts.length) * 100 : 0
     
     trends.push({
       month: date.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' }),
@@ -230,15 +230,15 @@ async function calculateYearOverYear(supabase: any): Promise<YearComparison> {
     .gte('date', new Date(previousYear, 0, 1).toISOString())
     .lt('date', new Date(previousYear + 1, 0, 1).toISOString())
   
-  const currentRevenue = currentTransactions?.filter(t => t.transaction_type === 'income')
-    .reduce((sum, t) => sum + Number(t.amount), 0) || 0
-  const currentExpenses = currentTransactions?.filter(t => t.transaction_type === 'expense')
-    .reduce((sum, t) => sum + Number(t.amount), 0) || 0
+  const currentRevenue = currentTransactions?.filter((t: any) => t.transaction_type === 'income')
+    .reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
+  const currentExpenses = currentTransactions?.filter((t: any) => t.transaction_type === 'expense')
+    .reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
     
-  const previousRevenue = previousTransactions?.filter(t => t.transaction_type === 'income')
-    .reduce((sum, t) => sum + Number(t.amount), 0) || 0
-  const previousExpenses = previousTransactions?.filter(t => t.transaction_type === 'expense')
-    .reduce((sum, t) => sum + Number(t.amount), 0) || 0
+  const previousRevenue = previousTransactions?.filter((t: any) => t.transaction_type === 'income')
+    .reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
+  const previousExpenses = previousTransactions?.filter((t: any) => t.transaction_type === 'expense')
+    .reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
   
   return {
     currentYear: {
@@ -282,8 +282,8 @@ async function calculateGrowthRate(supabase: any, type: 'income' | 'expense'): P
     .gte('date', previousMonth.toISOString())
     .lt('date', currentMonth.toISOString())
   
-  const currentTotal = currentData?.reduce((sum, t) => sum + Number(t.amount), 0) || 0
-  const previousTotal = previousData?.reduce((sum, t) => sum + Number(t.amount), 0) || 0
+  const currentTotal = currentData?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
+  const previousTotal = previousData?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
   
   return previousTotal > 0 ? ((currentTotal - previousTotal) / previousTotal) * 100 : 0
 }
@@ -296,7 +296,7 @@ async function calculateOccupancyTrend(supabase: any): Promise<number> {
   
   if (!lofts || lofts.length === 0) return 0
   
-  const occupancyRate = (lofts.filter(l => l.status === 'occupied').length / lofts.length) * 100
+  const occupancyRate = (lofts.filter((l: any) => l.status === 'occupied').length / lofts.length) * 100
   
   // Retourner une tendance simulée (à remplacer par des données réelles)
   return Math.random() * 10 - 5 // Entre -5% et +5%

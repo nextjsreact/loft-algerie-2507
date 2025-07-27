@@ -1,10 +1,11 @@
-export type UserRole = 'admin' | 'member' | 'guest' | 'manager';
+export type UserRole = 'admin' | 'member' | 'guest' | 'manager' | 'executive';
 
 export type User = {
   id: string;
   email: string | null;
   full_name?: string | null;
   role: UserRole;
+  avatar_url?: string | null;
   // Add other user-related fields as needed
 };
 
@@ -35,6 +36,9 @@ export type InternetConnectionType = {
 export type LoftOwner = {
   id: string;
   name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
   ownership_type: 'company' | 'third_party';
 };
 
@@ -125,6 +129,7 @@ export const passwordSchema = {
 
 export type Currency = {
   id: string;
+  code: string;
   name: string;
   symbol: string;
   ratio: number;
@@ -142,6 +147,43 @@ export type Transaction = {
   loft_id?: string;
   currency_id?: string;
   payment_method_id?: string;
+  ratio_at_transaction?: number;
+  equivalent_amount_default_currency?: number;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type CategoryType = 'income' | 'expense';
+
+export type Category = {
+  id: string;
+  name: string;
+  description: string | null;
+  type: CategoryType;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type Team = {
+  id: string;
+  name: string;
+  description?: string;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type PaymentMethod = {
+  id: string;
+  name: string;
+  type: string;
+  details?: any;
+  created_at?: string;
+  updated_at?: string;
 };
 
 export type Database = any;
+
+export type PageProps<T = {}> = {
+  params: T;
+  searchParams: { [key: string]: string | string[] | undefined };
+};

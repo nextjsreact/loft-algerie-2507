@@ -3,8 +3,8 @@ import { createClient } from "@/utils/supabase/server"
 import { PaymentMethodForm } from "@/components/forms/payment-method-form"
 import { updatePaymentMethod } from "@/app/actions/payment-methods"
 
-export default async function EditPaymentMethodPage({ params }: { params: { id: string } }) {
-  const { id } = params
+export default async function EditPaymentMethodPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   await requireRole(["admin"])
   const supabase = await createClient()
 

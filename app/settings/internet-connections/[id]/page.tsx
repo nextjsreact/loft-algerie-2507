@@ -5,9 +5,10 @@ import { Heading } from "@/components/ui/heading";
 export default async function EditInternetConnectionTypePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { data: internetConnectionType } = await getInternetConnectionTypeById(params.id);
+  const { id } = await params
+  const { data: internetConnectionType } = await getInternetConnectionTypeById(id);
 
   if (!internetConnectionType) {
     return <div>Internet connection type not found</div>;

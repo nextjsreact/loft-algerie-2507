@@ -71,7 +71,10 @@ export async function getMemberDashboardData(userId: string): Promise<MemberDash
       })
 
       return {
-        userTasks: userTasks as MemberTask[],
+        userTasks: (userTasks || []).map((task: any) => ({
+          ...task,
+          loft: Array.isArray(task.loft) ? { name: task.loft[0]?.name || 'Unknown' } : task.loft
+        })) as MemberTask[],
         taskStats
       }
     } catch (error) {

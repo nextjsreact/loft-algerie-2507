@@ -89,7 +89,7 @@ export default function ReportCharts({ loftRevenue, monthlyRevenue }: ReportChar
                   fill="#8884d8"
                   dataKey="net_profit"
                   nameKey="name"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                 >
                   {top5Lofts.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

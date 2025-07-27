@@ -135,13 +135,14 @@ export async function checkPaymentOverdueNotifications(): Promise<void> {
           (Date.now() - new Date(payment.due_date).getTime()) / (1000 * 60 * 60 * 24)
         )
 
-        const title = `Payment Overdue - ${payment.loft?.name}`
+        const title = `Payment Overdue - ${(Array.isArray(payment.loft) ? (payment.loft[0] as any)?.name : (payment.loft as any)?.name) || 'Unknown'}`
         const message = `Payment of $${payment.amount} from ${payment.tenant_name} is ${daysOverdue} days overdue.`
 
         // Notify property owner
-        if (payment.loft?.owner_id) {
+        const loftData = Array.isArray(payment.loft) ? payment.loft[0] : payment.loft
+        if (loftData?.owner_id) {
           await createNotification(
-            payment.loft.owner_id,
+            loftData.owner_id,
             title,
             message,
             'warning',
@@ -202,7 +203,7 @@ export async function checkMaintenanceDueNotifications(): Promise<void> {
 
       // Create notifications for each due task
       for (const task of dueTasks || []) {
-        const title = `Maintenance Due - ${task.loft?.name}`
+        const title = `Maintenance Due - ${(Array.isArray(task.loft) ? (task.loft[0] as any)?.name : (task.loft as any)?.name) || 'Unknown'}`
         const message = `Maintenance task "${task.description}" is due on ${new Date(task.scheduled_date).toLocaleDateString()}.`
 
         // Notify assigned user
@@ -217,9 +218,10 @@ export async function checkMaintenanceDueNotifications(): Promise<void> {
         }
 
         // Notify property owner
-        if (task.loft?.owner_id) {
+        const taskLoftData = Array.isArray(task.loft) ? task.loft[0] : task.loft
+        if (taskLoftData?.owner_id) {
           await createNotification(
-            task.loft.owner_id,
+            taskLoftData.owner_id,
             title,
             message,
             'info',

@@ -6,7 +6,10 @@ import { format } from "date-fns"
 import type { Task as BaseTask } from "@/lib/types" // Import BaseTask from lib/types
 import { useTranslation } from "@/lib/i18n/context"
 
-interface DisplayTask extends BaseTask {
+interface DisplayTask {
+  id: string;
+  title: string;
+  status: 'todo' | 'in_progress' | 'completed';
   assigned_user?: { full_name: string } | null;
   loft?: { name: string } | null;
   due_date?: Date; // Ensure due_date is a Date object for display

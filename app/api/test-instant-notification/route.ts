@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { type = 'info', title, message, userId } = body
     
-    const supabase = createClient()
+    const supabase = await createClient()
     
     // Use the provided userId or default to current user
     const targetUserId = userId || session.user.id

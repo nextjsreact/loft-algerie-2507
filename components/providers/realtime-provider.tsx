@@ -109,15 +109,16 @@ export function RealtimeProvider({ children, userId }: RealtimeProviderProps) {
 
                     // Browser notification
                     if ('Notification' in window && Notification.permission === 'granted') {
-                      new Notification(t('notifications.newMessageFrom').replace('{name}', senderName), {
+                      const notification = new Notification(t('notifications.newMessageFrom').replace('{name}', senderName), {
                         body: newMessage.content,
                         icon: '/favicon.ico',
-                        tag: newMessage.conversation_id,
-                        onclick: () => {
-                          window.focus()
-                          window.location.href = `/conversations/${newMessage.conversation_id}`
-                        }
+                        tag: newMessage.conversation_id
                       })
+                      
+                      notification.onclick = () => {
+                        window.focus()
+                        window.location.href = `/conversations/${newMessage.conversation_id}`
+                      }
                     }
                   }
                 } catch (error) {
@@ -130,9 +131,7 @@ export function RealtimeProvider({ children, userId }: RealtimeProviderProps) {
           console.log('Conversations system not available, skipping message subscriptions')
         }
       })
-      .catch(error => {
-        console.log('Conversations system not available, skipping message subscriptions:', error)
-      })
+
 
     // Set up real-time subscription for task notifications
     const notificationsSubscription = supabase
@@ -169,17 +168,18 @@ export function RealtimeProvider({ children, userId }: RealtimeProviderProps) {
 
           // Browser notification
           if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification(newNotification.title, {
+            const notification = new Notification(newNotification.title, {
               body: newNotification.message,
               icon: '/favicon.ico',
-              tag: newNotification.id,
-              onclick: () => {
-                window.focus()
-                if (newNotification.link) {
-                  window.location.href = newNotification.link
-                }
-              }
+              tag: newNotification.id
             })
+            
+            notification.onclick = () => {
+              window.focus()
+              if (newNotification.link) {
+                window.location.href = newNotification.link
+              }
+            }
           }
         }
       )

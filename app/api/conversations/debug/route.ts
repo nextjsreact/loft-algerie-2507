@@ -10,8 +10,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const supabase = createClient()
-    const debug = {
+    const supabase = await createClient()
+    const debug: {
+      userId: string;
+      tables: Record<string, any>;
+      foreignKeys: Record<string, any>;
+      errors: any[];
+    } = {
       userId: session.user.id,
       tables: {},
       foreignKeys: {},

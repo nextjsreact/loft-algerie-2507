@@ -79,7 +79,7 @@ async function checkOccupancyRate(supabase: any): Promise<void> {
   
   if (!lofts || lofts.length === 0) return
   
-  const occupancyRate = (lofts.filter(l => l.status === 'occupied').length / lofts.length) * 100
+  const occupancyRate = (lofts.filter((l: any) => l.status === 'occupied').length / lofts.length) * 100
   
   if (occupancyRate < 70) {
     await createCriticalAlert(
@@ -87,7 +87,7 @@ async function checkOccupancyRate(supabase: any): Promise<void> {
       occupancyRate < 50 ? 'critical' : 'high',
       `Taux d'occupation critique: ${occupancyRate.toFixed(1)}%`,
       `Le taux d'occupation est tombé à ${occupancyRate.toFixed(1)}%, en dessous du seuil critique de 70%. Action immédiate requise pour améliorer la commercialisation.`,
-      { occupancyRate, totalLofts: lofts.length, occupiedLofts: lofts.filter(l => l.status === 'occupied').length }
+      { occupancyRate, totalLofts: lofts.length, occupiedLofts: lofts.filter((l: any) => l.status === 'occupied').length }
     )
   }
 }
@@ -113,8 +113,8 @@ async function checkFinancialTrends(supabase: any): Promise<void> {
     .gte('date', previousMonth.toISOString())
     .lt('date', currentMonth.toISOString())
   
-  const currentTotal = currentRevenue?.reduce((sum, t) => sum + Number(t.amount), 0) || 0
-  const previousTotal = previousRevenue?.reduce((sum, t) => sum + Number(t.amount), 0) || 0
+  const currentTotal = currentRevenue?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
+  const previousTotal = previousRevenue?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
   
   if (previousTotal > 0) {
     const changePercent = ((currentTotal - previousTotal) / previousTotal) * 100
@@ -144,8 +144,8 @@ async function checkFinancialTrends(supabase: any): Promise<void> {
     .gte('date', previousMonth.toISOString())
     .lt('date', currentMonth.toISOString())
   
-  const currentExpenseTotal = currentExpenses?.reduce((sum, t) => sum + Number(t.amount), 0) || 0
-  const previousExpenseTotal = previousExpenses?.reduce((sum, t) => sum + Number(t.amount), 0) || 0
+  const currentExpenseTotal = currentExpenses?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
+  const previousExpenseTotal = previousExpenses?.reduce((sum: number, t: any) => sum + Number(t.amount), 0) || 0
   
   if (previousExpenseTotal > 0) {
     const expenseChangePercent = ((currentExpenseTotal - previousExpenseTotal) / previousExpenseTotal) * 100
@@ -225,13 +225,13 @@ async function checkTransactionAnomalies(supabase: any): Promise<void> {
   
   if (recentTransactions && recentTransactions.length > 0) {
     // Calculer la moyenne des transactions
-    const amounts = recentTransactions.map(t => Number(t.amount))
-    const average = amounts.reduce((sum, amount) => sum + amount, 0) / amounts.length
+    const amounts = recentTransactions.map((t: any) => Number(t.amount))
+    const average = amounts.reduce((sum: number, amount: number) => sum + amount, 0) / amounts.length
     const maxAmount = Math.max(...amounts)
     
     // Si une transaction dépasse 3x la moyenne
     if (maxAmount > average * 3) {
-      const anomalousTransaction = recentTransactions.find(t => Number(t.amount) === maxAmount)
+      const anomalousTransaction = recentTransactions.find((t: any) => Number(t.amount) === maxAmount)
       
       await createCriticalAlert(
         'transaction_anomaly',

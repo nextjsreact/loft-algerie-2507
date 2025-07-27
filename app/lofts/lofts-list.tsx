@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 
 interface LoftsListProps {
-  lofts: Loft[]
+  lofts: any[] // Using any for now to handle the joined data
   owners: LoftOwner[]
   zoneAreas: ZoneArea[]
   isAdmin: boolean
@@ -119,11 +119,11 @@ export function LoftsList({ lofts, owners, zoneAreas, isAdmin }: LoftsListProps)
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">{t('lofts.owner')}:</span>
-                  <span className="font-medium">{loft.owner_name || t('lofts.unknown')}</span>
+                  <span className="font-medium">{owners.find(o => o.id === loft.owner_id)?.name || t('lofts.unknown')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">{t('lofts.zoneArea')}:</span>
-                  <span className="font-medium">{loft.zone_area_name || "N/A"}</span>
+                  <span className="font-medium">{zoneAreas.find(z => z.id === loft.zone_area_id)?.name || "N/A"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">{t('lofts.companyShare')}:</span>

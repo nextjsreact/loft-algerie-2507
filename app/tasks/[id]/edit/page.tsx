@@ -5,9 +5,9 @@ import { notFound } from 'next/navigation'
 import { getSession } from "@/lib/auth" // Import getSession
 
 interface EditTaskPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export default async function EditTaskPage({ params }: EditTaskPageProps) {

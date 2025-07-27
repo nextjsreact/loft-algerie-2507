@@ -25,7 +25,7 @@ const formSchema = z.object({
   name: z.string().min(2),
   symbol: z.string().min(1).max(3),
   is_default: z.boolean(),
-  ratio: z.coerce.number().min(0),
+  ratio: z.number().min(0),
 })
 
 interface CurrencyFormProps {

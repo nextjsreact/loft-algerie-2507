@@ -244,8 +244,8 @@ export async function getUserActivity(
       })
 
       // Get recent actions (last 10)
-      const recentActions: AuditLog[] = logs.slice(0, 10).map(log => ({
-        id: log.id || '',
+      const recentActions: AuditLog[] = logs.slice(0, 10).map((log, index) => ({
+        id: `${log.resource_type}-${log.resource_id}-${index}`,
         user_id: userId,
         action: log.action,
         resource_type: log.resource_type,
@@ -320,7 +320,7 @@ export async function getSystemActivity(days: number = 7): Promise<{
         if (!userCounts[log.user_id]) {
           userCounts[log.user_id] = {
             count: 0,
-            name: log.user?.full_name || 'Unknown User'
+            name: (Array.isArray(log.user) ? (log.user[0] as any)?.full_name : (log.user as any)?.full_name) || 'Unknown User'
           }
         }
         userCounts[log.user_id].count++
@@ -385,7 +385,7 @@ export async function cleanupOldAuditLogs(retentionDays: number = 365): Promise<
         throw error
       }
 
-      const deletedCount = data?.length || 0
+      const deletedCount = (data as any)?.length || 0
       logger.info('Old audit logs cleaned up', { deletedCount, retentionDays })
       return deletedCount
     } catch (error) {

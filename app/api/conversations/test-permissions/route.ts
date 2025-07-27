@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const supabase = createClient()
+    const supabase = await createClient()
     const userId = session.user.id
 
     // Get current user info
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Remove duplicates and current user
-    const uniqueAllowedIds = [...new Set(allowedUserIds)].filter(id => id !== userId)
+    const uniqueAllowedIds = Array.from(new Set(allowedUserIds)).filter(id => id !== userId)
 
     // Get details of allowed users
     const { data: allowedUsers } = await supabase
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
       },
       teams: userTeams?.map(ut => ({
         id: ut.team_id,
-        name: ut.team?.name || 'Unknown Team'
+        name: (ut.team as any)?.name || 'Unknown Team'
       })) || [],
       canMessage: allowedUsers?.map(user => ({
         id: user.id,

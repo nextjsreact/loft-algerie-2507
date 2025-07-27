@@ -23,7 +23,7 @@ const currencySchema = z.object({
   name: z.string().min(2),
   symbol: z.string().min(1).max(3),
   is_default: z.boolean(), // Make is_default required
-  ratio: z.coerce.number().min(0), // Make ratio required
+  ratio: z.number().min(0), // Make ratio required
 })
 
 type CurrencyFormValues = z.infer<typeof currencySchema>

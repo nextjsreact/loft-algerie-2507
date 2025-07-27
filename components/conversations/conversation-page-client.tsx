@@ -103,15 +103,20 @@ export function ConversationPageClient({
             .single()
 
           if (data && !error) {
-            addMessage(data as Message)
+            // Fix sender data if it's an array (Supabase join issue)
+            const messageData = {
+              ...data,
+              sender: Array.isArray(data.sender) ? data.sender[0] : data.sender
+            }
+            addMessage(messageData as Message)
             
             // Show notification for messages from others
-            if (data.sender_id !== currentUserId) {
-              const senderName = data.sender?.full_name || 'Someone'
+            if (messageData.sender_id !== currentUserId) {
+              const senderName = messageData.sender?.full_name || 'Someone'
               toast.success(t('notifications.newMessageFrom').replace('{name}', senderName), {
-                description: data.content.length > 50 
-                  ? data.content.substring(0, 50) + '...' 
-                  : data.content
+                description: messageData.content.length > 50 
+                  ? messageData.content.substring(0, 50) + '...' 
+                  : messageData.content
               })
             }
           }

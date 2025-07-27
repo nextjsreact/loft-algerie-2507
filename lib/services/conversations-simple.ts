@@ -50,37 +50,37 @@ export async function getSimpleUserConversations(userId: string): Promise<Simple
     if (testError) {
       console.error('Table test error:', testError)
       console.error('Error details:', {
-        message: testError.message,
-        code: testError.code,
-        details: testError.details,
-        hint: testError.hint,
+        message: (testError as any).message,
+        code: (testError as any).code,
+        details: (testError as any).details,
+        hint: (testError as any).hint,
         full: testError
       })
       
       // Check for infinite recursion in RLS policies
-      if (testError.message?.includes('infinite recursion') || 
-          testError.message?.includes('policy')) {
+      if ((testError as any).message?.includes('infinite recursion') || 
+          (testError as any).message?.includes('policy')) {
         throw new Error('RLS policy infinite recursion detected. Please run the RLS fix script.')
       }
       
       // Check if it's a table not found error
-      if (testError.message?.includes('relation') || 
-          testError.message?.includes('does not exist') ||
-          testError.code === 'PGRST116') {
+      if ((testError as any).message?.includes('relation') || 
+          (testError as any).message?.includes('does not exist') ||
+          (testError as any).code === 'PGRST116') {
         throw new Error('Conversations tables not found. Please run the database setup script.')
       }
       
       // Check for permission errors
-      if (testError.code === '42501' || testError.message?.includes('permission')) {
+      if ((testError as any).code === '42501' || (testError as any).message?.includes('permission')) {
         throw new Error('Permission denied accessing conversations table. Check RLS policies.')
       }
       
       // Check for authentication errors
-      if (testError.code === '42P01' || testError.message?.includes('authentication')) {
+      if ((testError as any).code === '42P01' || (testError as any).message?.includes('authentication')) {
         throw new Error('Authentication error accessing conversations table.')
       }
       
-      throw new Error(`Conversations table not accessible: ${testError.message || testError.code || JSON.stringify(testError)}`)
+      throw new Error(`Conversations table not accessible: ${(testError as any).message || (testError as any).code || JSON.stringify(testError)}`)
     }
     
     console.log('Table exists, proceeding with user query')

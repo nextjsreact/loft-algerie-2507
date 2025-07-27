@@ -9,7 +9,8 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import type { Currency } from "@/lib/types"
 
-export default async function TransactionPage({ params: { id } }: { params: { id: string } }) {
+export default async function TransactionPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const session = await requireRole(["admin", "manager"])
   const [transaction, currencies, paymentMethods] = await Promise.all([
     getTransaction(id),

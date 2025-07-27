@@ -5,15 +5,16 @@ import { getTeam } from "@/app/actions/teams"
 import Link from "next/link"
 import { format } from "date-fns"
 
-export default async function TeamViewPage({ params }: { params: { id: string } }) {
-  const team = await getTeam(params.id)
+export default async function TeamViewPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const team = await getTeam(id)
 
   if (!team) {
     return (
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Team Not Found</h1>
-          <p className="text-muted-foreground">Could not find team with ID {params.id}</p>
+          <p className="text-muted-foreground">Could not find team with ID {id}</p>
         </div>
       </div>
     )

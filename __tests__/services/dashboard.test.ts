@@ -95,7 +95,14 @@ describe('Dashboard Service', () => {
         }
 
         if (table === 'lofts') {
-          mockQueries.select = jest.fn(() => ({ data: mockLoftsData, error: null }))
+          mockQueries.select = jest.fn(() => ({
+            eq: jest.fn(() => ({ data: [], error: null })),
+            in: jest.fn(() => ({ data: [], error: null })),
+            order: jest.fn(() => ({
+              limit: jest.fn(() => ({ data: [], error: null }))
+            })),
+            gte: jest.fn(() => ({ data: [], error: null }))
+          }))
         }
 
         return mockQueries

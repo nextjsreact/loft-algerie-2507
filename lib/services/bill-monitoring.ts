@@ -243,7 +243,7 @@ async function checkOverdueBills(): Promise<void> {
       if (adminUsers && adminUsers.length > 0) {
         const adminIds = adminUsers.map(user => user.id)
         const overdueCount = overdueBills.length
-        const loftNames = [...new Set(overdueBills.map(bill => bill.loft_name))].slice(0, 3)
+        const loftNames = Array.from(new Set(overdueBills.map((bill: any) => bill.loft_name))).slice(0, 3)
         const loftList = loftNames.join(', ') + (overdueBills.length > 3 ? ` and ${overdueBills.length - 3} more` : '')
 
         await sendScriptBulkNotifications(
@@ -284,7 +284,7 @@ export async function getBillMonitoringStats(): Promise<{
     }
 
     const today = new Date().toISOString().split('T')[0]
-    const dueToday = (upcomingBills || []).filter(bill => 
+    const dueToday = (upcomingBills || []).filter((bill: any) => 
       bill.due_date === today
     ).length
 

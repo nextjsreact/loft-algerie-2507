@@ -3,8 +3,8 @@ import { createClient } from "@/utils/supabase/server"
 import { OwnerForm } from "@/components/forms/owner-form"
 import { updateOwner } from "@/app/actions/owners"
 
-export default async function EditOwnerPage({ params }: { params: { id: string } }) {
-  const { id } = params
+export default async function EditOwnerPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   await requireRole(["admin"])
   const supabase = await createClient()
 

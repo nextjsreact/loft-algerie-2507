@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { LoftBillManagement } from "@/components/loft/bill-management"
 import Link from "next/link"
 
-export default async function LoftDetailPage({ params }: { params: { id: string } }) {
+export default async function LoftDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const awaitedParams = await params;
   const session = await requireRole(["admin", "manager"])
   const supabase = await createClient()

@@ -86,7 +86,10 @@ export function BulkOperations({
           <Checkbox
             checked={isAllSelected}
             ref={(el) => {
-              if (el) el.indeterminate = isIndeterminate
+              if (el) {
+                const input = el.querySelector('input')
+                if (input) input.indeterminate = isIndeterminate
+              }
             }}
             onCheckedChange={handleSelectAll}
           />

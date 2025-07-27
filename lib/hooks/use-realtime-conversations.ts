@@ -156,7 +156,12 @@ export function useRealtimeConversations(
                   .single()
                   .then(({ data: messageData, error: messageError }) => {
                     if (messageData && !messageError) {
-                      updateConversationWithNewMessage(messageData as Message)
+                      // Fix sender data if it's an array (Supabase join issue)
+                      const fixedMessageData = {
+                        ...messageData,
+                        sender: Array.isArray(messageData.sender) ? messageData.sender[0] : messageData.sender
+                      }
+                      updateConversationWithNewMessage(fixedMessageData as Message)
                     }
                   })
               }

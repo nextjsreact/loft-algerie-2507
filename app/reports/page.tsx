@@ -16,13 +16,13 @@ export default async function ReportsPage() {
     throw new Error(loftsError.message)
   }
 
-  const loftRevenue = lofts.map((loft) => {
+  const loftRevenue = lofts.map((loft: any) => {
     const revenue = loft.transactions
-      .filter((t) => t.transaction_type === "income" && t.status === "completed")
-      .reduce((acc, t) => acc + t.amount, 0)
+      .filter((t: any) => t.transaction_type === "income" && t.status === "completed")
+      .reduce((acc: number, t: any) => acc + t.amount, 0)
     const expenses = loft.transactions
-      .filter((t) => t.transaction_type === "expense" && t.status === "completed")
-      .reduce((acc, t) => acc + t.amount, 0)
+      .filter((t: any) => t.transaction_type === "expense" && t.status === "completed")
+      .reduce((acc: number, t: any) => acc + t.amount, 0)
     return {
       name: loft.name,
       revenue,
